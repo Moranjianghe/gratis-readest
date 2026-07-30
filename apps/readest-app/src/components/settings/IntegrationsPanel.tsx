@@ -120,6 +120,15 @@ const IntegrationsPanel: React.FC = () => {
 
   const [subPage, setSubPage] = useState<SubPage>(null);
 
+  // Hydrate the OPDS store from settings so the row's catalog count is
+  // accurate on first open. Without this the store starts empty and the
+  // count reads zero until the user drills into the OPDS sub-page (where
+  // CatalogManager loads it). Loading happens once per mount; the store
+  // handles backfilling contentId for legacy entries.
+  useEffect(() => {
+    void useCustomOPDSStore.getState().loadCustomOPDSCatalogs(envConfig);
+  }, [envConfig]);
+
   // Android Back / Esc: when any integrations sub-page (KOSync, WebDAV,
   // Readwise, Hardcover, OPDS, Send-to-Readest) is open, intercept and
   // step back to the integrations list instead of letting <Dialog>'s

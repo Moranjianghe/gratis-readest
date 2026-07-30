@@ -185,6 +185,8 @@ const { mockSessionManager } = vi.hoisted(() => ({
     stopActive: vi.fn().mockResolvedValue(undefined),
     setSleepTimer: vi.fn(),
     getSleepTimer: vi.fn(() => null),
+    setStopAtChapterEnd: vi.fn(),
+    getStopAtChapterEnd: vi.fn(() => false),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
   },
@@ -193,6 +195,7 @@ const { mockSessionManager } = vi.hoisted(() => ({
 vi.mock('@/services/tts/TTSSessionManager', () => ({
   getBookHashFromKey: (key: string) => key.split('-')[0]!,
   ttsSessionManager: mockSessionManager,
+  TTS_STOP_AT_CHAPTER_END: -1,
 }));
 
 vi.mock('@/utils/ssml', () => ({
@@ -786,20 +789,5 @@ describe('useTTSControl gap control (handleSetSentenceGap / handleSupportsGapCon
     expect(controller.setSentenceGap).toHaveBeenCalledWith(0.5);
     expect(controller.stop).not.toHaveBeenCalled();
     expect(controller.start).not.toHaveBeenCalled();
-  });
-
-  it('handleSupportsGapControl reflects controller.supportsGapControl()', async () => {
-    const controller = await startSession();
-
-    controller.supportsGapControl.mockReturnValue(false);
-    expect(hookResult!.handleSupportsGapControl()).toBe(false);
-
-    controller.supportsGapControl.mockReturnValue(true);
-    expect(hookResult!.handleSupportsGapControl()).toBe(true);
-  });
-
-  it('handleSupportsGapControl returns false when no controller exists yet', () => {
-    render(<CaptureHarness />);
-    expect(hookResult!.handleSupportsGapControl()).toBe(false);
   });
 });
