@@ -187,7 +187,7 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJFQzNEQ0RBNzEyMzcyNkQKUldSdGNpTngydHpETHFnM0taVVdlTDhxWEZpZEIwTVZYT2crajNEWEpSejlvRGRjcnhPcHdvc3cK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIzMjUzMkUwNTAxNTREOTIKUldTU1RSVlE0RElsczlvMkVxMDFqWVdJYlFlaGpEaFpwREh1Q1pSMmltS2tKMStld3llUDlVUDkK",
       "endpoints": [
         "https://github.com/Moranjianghe/gratis-readest/releases/latest/download/latest.json"
       ]

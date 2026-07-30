@@ -888,7 +888,7 @@ export const READEST_NIGHTLY_UPDATER_FILE = APP_NIGHTLY_UPDATER_FILE;
 // Used to verify nightly artifacts in the custom install flows (portable /
 // AppImage / Android). Safe to embed — it is a public key.
 export const READEST_UPDATER_PUBKEY =
-  'dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJFQzNEQ0RBNzEyMzcyNkQKUldSdGNpTngydHpETHFnM0taVVdlTDhxWEZpZEIwTVZYT2crajNEWEpSejlvRGRjcnhPcHdvc3cK';
+  'dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIzMjUzMkUwNTAxNTREOTIKUldTU1RSVlE0RElsczlvMkVxMDFqWVdJYlFlaGpEaFpwREh1Q1pSMmltS2tKMStld3llUDlVUDkK';
 
 export const READEST_PUBLIC_STORAGE_BASE_URL = 'https://storage.readest.com';
 
