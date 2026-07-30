@@ -10,6 +10,7 @@ import SupportLinks from './SupportLinks';
 import LegalLinks from './LegalLinks';
 import Dialog from './Dialog';
 import Link from './Link';
+import { APP_NAME, APP_PROJECT_URL } from '@/config/appConfig';
 
 export const setAboutDialogVisible = (visible: boolean) => {
   const dialog = document.getElementById('about_window');
@@ -84,7 +85,7 @@ export const AboutWindow = () => {
     <Dialog
       id='about_window'
       isOpen={isOpen}
-      title={_('About Readest')}
+      title={`About ${APP_NAME}`}
       onClose={handleClose}
       boxClassName='sm:!w-[480px] sm:!max-w-screen-sm sm:h-auto'
     >
@@ -95,7 +96,7 @@ export const AboutWindow = () => {
               <Image src='/icon.png' alt='App Logo' className='h-20 w-20' width={64} height={64} />
             </div>
             <div className='flex select-text flex-col items-center'>
-              <h2 className='mb-2 text-2xl font-bold'>Readest</h2>
+              <h2 className='mb-2 text-2xl font-bold'>{APP_NAME}</h2>
               <p className='text-neutral-content text-center text-sm'>
                 {_('Version {{version}}', { version: getAppVersion() })} {`(${browserInfo})`}
               </p>
@@ -130,7 +131,7 @@ export const AboutWindow = () => {
             dir='ltr'
           >
             <p className='text-neutral-content text-sm'>
-              © {new Date().getFullYear()} Bilingify LLC. All rights reserved.
+              © {new Date().getFullYear()} Gratis Readest contributors.
             </p>
 
             <p className='text-neutral-content text-xs'>
@@ -146,7 +147,7 @@ export const AboutWindow = () => {
             </p>
             <p className='text-neutral-content text-xs'>
               Source code is available at{' '}
-              <Link href='https://github.com/readest/readest' className='text-blue-500 underline'>
+              <Link href={APP_PROJECT_URL} className='text-blue-500 underline'>
                 GitHub
               </Link>
               .

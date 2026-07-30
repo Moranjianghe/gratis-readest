@@ -14,6 +14,7 @@ import {
   READEST_UPDATER_FILE,
   READEST_NIGHTLY_UPDATER_FILE,
 } from '@/services/constants';
+import { APP_NIGHTLY_UPDATES_ENABLED } from '@/config/appConfig';
 
 const LAST_CHECK_KEY = 'lastAppUpdateCheck';
 
@@ -150,7 +151,7 @@ export const checkForAppUpdates = async (
   const OS_TYPE = osType();
 
   try {
-    if (updateChannel === 'nightly') {
+    if (updateChannel === 'nightly' && APP_NIGHTLY_UPDATES_ENABLED) {
       const platformKey = getNightlyPlatformKey(
         OS_TYPE,
         osArch(),

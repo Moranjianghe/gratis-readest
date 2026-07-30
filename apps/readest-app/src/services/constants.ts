@@ -37,11 +37,20 @@ import { DEFAULT_AI_SETTINGS } from './ai/constants';
 import { DEFAULT_ANNOTATION_TOOLBAR_ITEMS } from '@/utils/annotationToolbar';
 import { DEFAULT_SENTENCE_GAP_SEC } from './tts/EdgeTTSClient';
 import { DEFAULT_PARAGRAPH_GAP_SEC } from './tts/TTSController';
+import {
+  APP_DATA_SUBDIR,
+  APP_NIGHTLY_UPDATER_FILE,
+  APP_PROJECT_URL,
+  APP_UPDATE_BASE_URL,
+} from '@/config/appConfig';
 
-export const DATA_SUBDIR = 'Readest';
+export const DATA_SUBDIR = APP_DATA_SUBDIR;
 export const LOCAL_BOOKS_SUBDIR = `${DATA_SUBDIR}/Books`;
-export const CLOUD_BOOKS_SUBDIR = `${DATA_SUBDIR}/Books`;
-export const CLOUD_REPLICAS_SUBDIR = `${DATA_SUBDIR}/Replicas`;
+// Keep the upstream cloud wire namespace stable; only local storage is
+// namespaced for Gratis Readest so existing remote data remains compatible.
+const CLOUD_DATA_SUBDIR = 'Readest';
+export const CLOUD_BOOKS_SUBDIR = `${CLOUD_DATA_SUBDIR}/Books`;
+export const CLOUD_REPLICAS_SUBDIR = `${CLOUD_DATA_SUBDIR}/Replicas`;
 export const LOCAL_FONTS_SUBDIR = `${DATA_SUBDIR}/Fonts`;
 export const LOCAL_IMAGES_SUBDIR = `${DATA_SUBDIR}/Images`;
 export const LOCAL_DICTIONARIES_SUBDIR = `${DATA_SUBDIR}/Dictionaries`;
@@ -840,7 +849,7 @@ export const CJK_FONTS_PATTENS = new RegExp(
 
 export const BOOK_IDS_SEPARATOR = '+';
 
-export const DOWNLOAD_READEST_URL = 'https://readest.com?utm_source=readest_web';
+export const DOWNLOAD_READEST_URL = APP_PROJECT_URL;
 
 export const READEST_WEB_BASE_URL = 'https://web.readest.com';
 export const READEST_NODE_BASE_URL = 'https://node.readest.com';
@@ -866,19 +875,19 @@ export const SHARE_TOKEN_LENGTH = 22;
 export const SHARE_PRESIGN_TTL_SECONDS = 300;
 export const SHARE_CFI_MAX_LENGTH = 512;
 
-const LATEST_DOWNLOAD_BASE_URL = 'https://download.readest.com/releases';
+const LATEST_DOWNLOAD_BASE_URL = APP_UPDATE_BASE_URL;
 
 export const READEST_UPDATER_FILE = `${LATEST_DOWNLOAD_BASE_URL}/latest.json`;
 
 export const READEST_CHANGELOG_FILE = `${LATEST_DOWNLOAD_BASE_URL}/release-notes.json`;
 
-export const READEST_NIGHTLY_UPDATER_FILE = 'https://download.readest.com/nightly/latest.json';
+export const READEST_NIGHTLY_UPDATER_FILE = APP_NIGHTLY_UPDATER_FILE;
 
 // Public (verification) key, identical to src-tauri/tauri.conf.json `updater.pubkey`.
 // Used to verify nightly artifacts in the custom install flows (portable /
 // AppImage / Android). Safe to embed — it is a public key.
 export const READEST_UPDATER_PUBKEY =
-  'dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJFMEQ1QjE2OEU1NEIzNTEKUldSUnMxU09GbHNOdmpEaWFMT1crRFpEV2VORzQ2MklxaFc0M1R0ci9xY2c1bENXS0xhM1R1L2sK';
+  'dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJFQzNEQ0RBNzEyMzcyNkQKUldSdGNpTngydHpETHFnM0taVVdlTDhxWEZpZEIwTVZYT2crajNEWEpSejlvRGRjcnhPcHdvc3cK';
 
 export const READEST_PUBLIC_STORAGE_BASE_URL = 'https://storage.readest.com';
 

@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Readest",
-  "mainBinaryName": "readest",
+  "productName": "Gratis Readest",
+  "mainBinaryName": "gratis-readest",
   "identifier": "com.bilingify.readest",
   "version": "../package.json",
   "build": {
@@ -31,7 +31,7 @@
             "$APPDATA/**/*",
             "$APPCACHE/**/*",
             "$TEMP/**/*",
-            "**/Readest/**/*",
+            "**/GratisReadest/**/*",
             "/private/var/mobile/Containers/Data/Application/**/*"
           ],
           "deny": []
@@ -187,10 +187,9 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJFMEQ1QjE2OEU1NEIzNTEKUldSUnMxU09GbHNOdmpEaWFMT1crRFpEV2VORzQ2MklxaFc0M1R0ci9xY2c1bENXS0xhM1R1L2sK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJFQzNEQ0RBNzEyMzcyNkQKUldSdGNpTngydHpETHFnM0taVVdlTDhxWEZpZEIwTVZYT2crajNEWEpSejlvRGRjcnhPcHdvc3cK",
       "endpoints": [
-        "https://download.readest.com/releases/latest.json",
-        "https://github.com/readest/readest/releases/latest/download/latest.json"
+        "https://github.com/Moranjianghe/gratis-readest/releases/latest/download/latest.json"
       ]
     },
     "webview-upgrade": {

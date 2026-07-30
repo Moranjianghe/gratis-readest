@@ -4,32 +4,29 @@ import Script from 'next/script';
 import { ViewTransitions } from 'next-view-transitions';
 import { EnvProvider } from '@/context/EnvContext';
 import Providers from '@/components/Providers';
+import { APP_NAME, APP_PROJECT_URL } from '@/config/appConfig';
 
 import '../styles/globals.css';
 
-const url = 'https://web.readest.com/';
-const title = 'Readest — Where You Read, Digest and Get Insight';
-const description =
-  'Discover Readest, the ultimate online ebook reader for immersive and organized reading. ' +
-  'Enjoy seamless access to your digital library, powerful tools for highlighting, bookmarking, ' +
-  'and note-taking, and support for multiple book views. ' +
-  'Perfect for deep reading, analysis, and understanding. Explore now!';
-const previewImage = 'https://cdn.readest.com/images/open_graph_preview_read_now.png';
+const url = APP_PROJECT_URL;
+const title = `${APP_NAME} — Local-first ebook reader`;
+const description = 'Gratis Readest is a local-first ebook reader for EPUB, PDF, TXT and more.';
+const previewImage = `${APP_PROJECT_URL}/raw/main/data/screenshots/landing_all_platforms.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(url),
   title: {
     default: title,
-    template: '%s | Readest',
+    template: `%s | ${APP_NAME}`,
   },
   description,
   generator: 'Next.js',
   manifest: '/manifest.json',
-  keywords: ['epub', 'pdf', 'ebook', 'reader', 'readest', 'pwa'],
+  keywords: ['epub', 'pdf', 'ebook', 'reader', 'gratis-readest', 'pwa'],
   authors: [
     {
-      name: 'readest',
-      url: 'https://github.com/readest/readest',
+      name: APP_NAME,
+      url: APP_PROJECT_URL,
     },
   ],
   icons: {
@@ -38,7 +35,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: 'Readest',
+    title: APP_NAME,
     statusBarStyle: 'default',
   },
   openGraph: {
@@ -56,8 +53,8 @@ export const metadata: Metadata = {
   },
   other: {
     'apple-mobile-web-app-capable': 'yes',
-    'twitter:domain': 'web.readest.com',
-    'twitter:url': url,
+    'twitter:domain': 'github.com',
+    'twitter:url': APP_PROJECT_URL,
   },
 };
 

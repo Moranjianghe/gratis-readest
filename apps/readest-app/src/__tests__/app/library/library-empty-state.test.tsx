@@ -37,7 +37,7 @@ afterEach(() => {
 });
 
 describe('LibraryEmptyState', () => {
-  it('renders title, desktop description, and both CTAs when logged out on desktop', () => {
+  it('renders the local import CTA when logged out on desktop', () => {
     useEnvMock.mockReturnValue({ appService: { isMobile: false } });
     useAuthMock.mockReturnValue({ user: null });
     render(<LibraryEmptyState onImport={vi.fn()} />);

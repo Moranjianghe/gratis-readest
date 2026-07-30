@@ -38,7 +38,8 @@ export const canBackendRun = (kind: FileSyncBackendKind): boolean =>
  * getActiveFileSyncBackends} minus any that {@link canBackendRun} rules out
  * (web Google Drive with a gone/expired token). Display surfaces use this so a
  * provider that is enabled but silently skipped is not counted as active or
- * reported as synced.
+ * reported as synced. Account-plan gating, when enabled by product policy,
+ * remains inside the active-backend resolver.
  */
 export const getReadyFileSyncBackends = (
   settings: SystemSettings | null | undefined,

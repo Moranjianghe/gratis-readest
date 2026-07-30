@@ -60,6 +60,10 @@ vi.mock('@/services/constants', () => ({
   READEST_NIGHTLY_UPDATER_FILE: 'https://example.com/nightly/latest.json',
 }));
 
+vi.mock('@/config/appConfig', () => ({
+  APP_NIGHTLY_UPDATES_ENABLED: true,
+}));
+
 import {
   checkForAppUpdates,
   checkAppReleaseNotes,

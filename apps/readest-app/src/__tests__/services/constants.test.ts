@@ -108,8 +108,8 @@ describe('services/constants', () => {
       expect(LOCAL_BOOKS_SUBDIR).toContain(DATA_SUBDIR);
     });
 
-    it('CLOUD_BOOKS_SUBDIR contains DATA_SUBDIR', () => {
-      expect(CLOUD_BOOKS_SUBDIR).toContain(DATA_SUBDIR);
+    it('CLOUD_BOOKS_SUBDIR keeps the upstream remote namespace', () => {
+      expect(CLOUD_BOOKS_SUBDIR).toBe('Readest/Books');
     });
 
     it('LOCAL_FONTS_SUBDIR contains DATA_SUBDIR', () => {

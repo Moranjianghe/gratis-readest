@@ -41,6 +41,7 @@ import { upgradeToKeychainIfAvailable } from '@/libs/crypto/passphrase';
 import { cryptoSession } from '@/libs/crypto/session';
 import { useAppLockStore } from '@/store/appLockStore';
 import { initSettingsSync } from '@/services/sync/replicaSettingsSync';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 // One-time, on first launch after this feature ships, decide how to handle
 // PostHog telemetry for the current install:
@@ -62,6 +63,7 @@ const finalizeTelemetryDecision = ({
   isNewUser: boolean;
   onShowPrompt: () => void;
 }) => {
+  if (!APP_TELEMETRY_ENABLED) return;
   const existing = getTelemetryDecision();
   if (existing === 'pending') {
     onShowPrompt();

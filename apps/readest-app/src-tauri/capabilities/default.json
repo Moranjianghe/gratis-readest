@@ -30,7 +30,7 @@
       "identifier": "fs:scope-appdata-recursive",
       "allow": [
         {
-          "path": "$APPDATA/Readest/**/*"
+          "path": "$APPDATA/GratisReadest/**/*"
         }
       ],
       "deny": []
@@ -55,10 +55,10 @@
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "**/Readest"
+          "path": "**/GratisReadest"
         },
         {
-          "path": "**/Readest/**/*"
+          "path": "**/GratisReadest/**/*"
         },
         {
           "path": "**/com.github.johnfactotum.Foliate/**/*"

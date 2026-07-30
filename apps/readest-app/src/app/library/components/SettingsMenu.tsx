@@ -45,6 +45,7 @@ import MenuItem from '@/components/MenuItem';
 import Quota from '@/components/Quota';
 import Menu from '@/components/Menu';
 import { type AppLockDialogMode, useAppLockStore } from '@/store/appLockStore';
+import { APP_NAME } from '@/config/appConfig';
 
 interface SettingsMenuProps {
   onPullLibrary: (fullRefresh?: boolean, verbose?: boolean) => void;
@@ -477,8 +478,8 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onPullLibrary, setIsDropdow
       {user && userProfilePlan === 'free' && (
         <MenuItem label={_('Upgrade to Readest Premium')} onClick={handleUpgrade} />
       )}
-      {isWebAppPlatform() && <MenuItem label={_('Download Readest')} onClick={downloadReadest} />}
-      <MenuItem label={_('About Readest')} onClick={showAboutReadest} />
+      {isWebAppPlatform() && <MenuItem label={`Download ${APP_NAME}`} onClick={downloadReadest} />}
+      <MenuItem label={`About ${APP_NAME}`} onClick={showAboutReadest} />
     </Menu>
   );
 };

@@ -1,4 +1,5 @@
 import posthog from 'posthog-js';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 export const TELEMETRY_OPT_OUT_KEY = 'readest-telemetry-opt-out';
 export const TELEMETRY_DECISION_KEY = 'readest-telemetry-decision';
@@ -9,6 +10,7 @@ export type TelemetryDecision = 'opt-in' | 'opt-out' | 'pending';
 export const TELEMETRY_PROMPT_BUCKET_RATE = 0.1;
 
 export const hasOptedOutTelemetry = () => {
+  if (!APP_TELEMETRY_ENABLED) return true;
   return localStorage.getItem(TELEMETRY_OPT_OUT_KEY) === 'true';
 };
 
@@ -29,12 +31,18 @@ export const rollIntoTelemetryPromptBucket = (rng: () => number = Math.random) =
 };
 
 export const captureEvent = (event: string, properties?: Record<string, unknown>) => {
+  if (!APP_TELEMETRY_ENABLED) return;
   if (!hasOptedOutTelemetry()) {
     posthog.capture(event, properties);
   }
 };
 
 export const optInTelemetry = () => {
+  if (!APP_TELEMETRY_ENABLED) {
+    localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'true');
+    setTelemetryDecision('opt-out');
+    return;
+  }
   localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'false');
   setTelemetryDecision('opt-in');
   posthog.opt_in_capturing();
@@ -42,5 +50,5 @@ export const optInTelemetry = () => {
 export const optOutTelemetry = () => {
   localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'true');
   setTelemetryDecision('opt-out');
-  posthog.opt_out_capturing();
+  if (APP_TELEMETRY_ENABLED) posthog.opt_out_capturing();
 };

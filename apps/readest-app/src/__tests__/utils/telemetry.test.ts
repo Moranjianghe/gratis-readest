@@ -52,20 +52,20 @@ describe('optInTelemetry / optOutTelemetry', () => {
     vi.clearAllMocks();
   });
 
-  it('opt-in records opt-in decision, clears opt-out flag, and calls posthog', () => {
+  it('keeps telemetry opted out when opt-in is unavailable in Gratis Readest', () => {
     optInTelemetry();
-    expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('false');
-    expect(getTelemetryDecision()).toBe('opt-in');
-    expect(hasOptedOutTelemetry()).toBe(false);
-    expect(posthog.opt_in_capturing).toHaveBeenCalledOnce();
+    expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('true');
+    expect(getTelemetryDecision()).toBe('opt-out');
+    expect(hasOptedOutTelemetry()).toBe(true);
+    expect(posthog.opt_in_capturing).not.toHaveBeenCalled();
   });
 
-  it('opt-out records opt-out decision, sets opt-out flag, and calls posthog', () => {
+  it('opt-out records opt-out decision without contacting PostHog', () => {
     optOutTelemetry();
     expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('true');
     expect(getTelemetryDecision()).toBe('opt-out');
     expect(hasOptedOutTelemetry()).toBe(true);
-    expect(posthog.opt_out_capturing).toHaveBeenCalledOnce();
+    expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
   });
 });
 

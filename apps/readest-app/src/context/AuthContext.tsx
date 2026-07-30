@@ -12,6 +12,7 @@ import {
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
 import posthog from 'posthog-js';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 interface AuthContextType {
   token: string | null;
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
         localStorage.setItem('user', JSON.stringify(user));
-        posthog.identify(user.id);
+        if (APP_TELEMETRY_ENABLED) posthog.identify(user.id);
         setToken(access_token);
         setUser(user);
       } else {
