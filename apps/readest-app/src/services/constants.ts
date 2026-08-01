@@ -159,6 +159,7 @@ export const DEFAULT_SYSTEM_SETTINGS: Partial<SystemSettings> = {
   autoCheckUpdates: true,
   updateChannel: 'stable',
   screenWakeLock: false,
+  autohideCursor: true,
   screenBrightness: -1, // -1~100, -1 for system default
   autoScreenBrightness: true,
   swipeBrightnessGesture: true,
@@ -258,7 +259,6 @@ export const DEFAULT_READSETTINGS: ReadSettings = {
   notebookWidth: '25%',
   isNotebookPinned: false,
   notebookActiveTab: 'notes',
-  autohideCursor: true,
   translationProvider: 'deepl',
   translateTargetLang: 'EN',
   wordLensAutoDownload: true,
