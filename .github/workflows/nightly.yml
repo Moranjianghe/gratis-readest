@@ -250,8 +250,16 @@ jobs:
               add_entry "apps/readest-app/Readest_${version}_arm64.apk" "Readest_${version}_arm64.apk"
               ;;
             linux)
-              appimage_name="Readest_${version}_amd64.AppImage"
-              add_entry "${bundle}/release/bundle/appimage/${appimage_name}" "$appimage_name"
+              appimage_dir="${bundle}/release/bundle/appimage"
+              mapfile -t appimages < <(find "$appimage_dir" -maxdepth 1 -type f -name '*.AppImage' ! -name '*.sig' -print)
+              if [ "${#appimages[@]}" -ne 1 ]; then
+                echo "::error::expected exactly one AppImage in $appimage_dir"
+                printf '%s\n' "${appimages[@]}"
+                exit 1
+              fi
+              appimage_path="${appimages[0]}"
+              appimage_name="$(basename "$appimage_path")"
+              add_entry "$appimage_path" "$appimage_name"
               ;;
             *)
               echo "::error::unknown release leg: $release"; exit 1
@@ -265,6 +273,7 @@ jobs:
         with:
           subject-path: |
             nightly-out/Readest*
+            nightly-out/Gratis Readest*
             !nightly-out/*.sig
 
       - name: upload platform artifact
@@ -294,7 +303,8 @@ jobs:
         run: |
           set -euo pipefail
           version="${{ needs.compute-version.outputs.nightly_version }}"
-          if ! compgen -G 'nightly/Readest*' > /dev/null; then
+          if ! compgen -G 'nightly/Readest*' > /dev/null \
+            && ! compgen -G 'nightly/Gratis Readest*' > /dev/null; then
             echo "::error::no build outputs found"
             exit 1
           fi
