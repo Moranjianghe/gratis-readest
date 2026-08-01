@@ -52,7 +52,8 @@ jobs:
         config:
           - os: ubuntu-latest
             release: android
-            rust_target: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+            arch: arm64
+            rust_target: aarch64-linux-android
           - os: ubuntu-22.04
             release: linux
             arch: x86_64
@@ -160,13 +161,9 @@ jobs:
           popd
 
           apk_path=src-tauri/gen/android/app/build/outputs/apk/universal/release
-          universal_apk=Readest_${version}_universal.apk
           arm64_apk=Readest_${version}_arm64.apk
-          pnpm tauri android build
-          cp ${apk_path}/app-universal-release.apk $universal_apk
           pnpm tauri android build -t aarch64
           cp ${apk_path}/app-universal-release.apk $arm64_apk
-          pnpm tauri signer sign $universal_apk
           pnpm tauri signer sign $arm64_apk
 
       # ──────────────────────────── DESKTOP ────────────────────────────
@@ -217,7 +214,6 @@ jobs:
 
           case "$release" in
             android)
-              add_entry "apps/readest-app/Readest_${version}_universal.apk" "Readest_${version}_universal.apk"
               add_entry "apps/readest-app/Readest_${version}_arm64.apk" "Readest_${version}_arm64.apk"
               ;;
             linux)
