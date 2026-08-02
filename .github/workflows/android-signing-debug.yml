@@ -2,6 +2,11 @@ name: Debug Android signing
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - gratis
+    paths:
+      - .github/workflows/android-signing-debug.yml
 
 permissions:
   contents: read
