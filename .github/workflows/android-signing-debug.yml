@@ -1,0 +1,131 @@
+name: Debug Android signing
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-signing-debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      ACTIONS_STEP_DEBUG: true
+      ACTIONS_RUNNER_DEBUG: true
+      RUST_BACKTRACE: full
+      CARGO_TERM_VERBOSE: true
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: initialize git submodules
+        run: git submodule update --init --recursive
+
+      - name: setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+
+      - name: setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - name: setup Android SDK
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+
+      - name: install Android SDK components
+        run: sdkmanager "platform-tools" "platforms;android-36" "ndk;28.2.13676358"
+
+      - name: install dependencies
+        run: |
+          pnpm install --frozen-lockfile --prefer-offline
+          pnpm --filter @readest/readest-app setup-vendors
+
+      - name: install Rust Android target
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        with:
+          targets: aarch64-linux-android
+
+      - name: create frontend environment
+        run: |
+          echo "NEXT_PUBLIC_APP_PLATFORM=tauri" >> .env.local
+          cp .env.local apps/readest-app/.env.local
+
+      - name: verify Android signing inputs
+        shell: bash
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          export ANDROID_HOME="${ANDROID_HOME:?Android SDK is not configured}"
+          export NDK_HOME="$ANDROID_HOME/ndk/28.2.13676358"
+          mkdir -p "$RUNNER_TEMP/android-signing"
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > "$RUNNER_TEMP/android-signing/keystore.jks"
+          echo "Java:"; java -version
+          echo "SDK: $ANDROID_HOME"
+          echo "NDK: $NDK_HOME"
+          echo "Keystore bytes: $(wc -c < "$RUNNER_TEMP/android-signing/keystore.jks")"
+          test -s "$RUNNER_TEMP/android-signing/keystore.jks"
+          echo "Checking keystore password and alias..."
+          keytool -list -keystore "$RUNNER_TEMP/android-signing/keystore.jks" -storepass "$ANDROID_KEY_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+          echo "Keystore password and alias verified."
+          echo "Checking private-key password on a temporary copy..."
+          cp "$RUNNER_TEMP/android-signing/keystore.jks" "$RUNNER_TEMP/android-signing/verify.jks"
+          keytool -keypasswd -keystore "$RUNNER_TEMP/android-signing/verify.jks" -storepass "$ANDROID_KEY_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD" -alias "$ANDROID_KEY_ALIAS" -new "$(openssl rand -hex 32)" >/dev/null
+          rm -f "$RUNNER_TEMP/android-signing/verify.jks"
+          echo "Private-key password verified."
+
+      - name: build Android APK with verbose Gradle output
+        shell: bash
+        timeout-minutes: 60
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/28.2.13676358
+          GRADLE_OPTS: >-
+            -Dorg.gradle.logging.level=info
+            -Dorg.gradle.logging.stacktrace=all
+            -Dorg.gradle.daemon=false
+        run: |
+          set -euo pipefail
+          cd apps/readest-app
+          rm -rf src-tauri/gen/android
+          pnpm tauri android init
+          pnpm tauri icon ../../data/icons/readest-book.png
+          git checkout .
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > "$RUNNER_TEMP/android-signing/keystore.jks"
+          pushd src-tauri/gen/android
+          printf 'keyAlias=%s\npassword=%s\nstoreFile=%s\n' "$ANDROID_KEY_ALIAS" "$ANDROID_KEY_PASSWORD" "$RUNNER_TEMP/android-signing/keystore.jks" > keystore.properties
+          popd
+          pnpm tauri android build -vvv -t aarch64
+
+      - name: verify APK signature
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=$(find apps/readest-app/src-tauri/gen/android/app/build/outputs/apk -name '*.apk' | head -n 1)
+          test -n "$apk"
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$apksigner" verify --verbose "$apk"
+
+      - name: upload Android debug artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: android-signing-debug
+          if-no-files-found: ignore
+          path: |
+            apps/readest-app/src-tauri/gen/android/app/build/outputs/**/*.apk
+            apps/readest-app/src-tauri/gen/android/app/build/outputs/**/*.aab
+            apps/readest-app/src-tauri/gen/android/build/reports/**
