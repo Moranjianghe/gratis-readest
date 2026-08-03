@@ -143,9 +143,11 @@ jobs:
           NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/28.2.13676358
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_BASE64: ${{ secrets.ANDROID_KEY_BASE64 }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: |
+          set -euo pipefail
           version="${{ needs.compute-version.outputs.nightly_version }}"
           cd apps/readest-app/
           rm -rf src-tauri/gen/android
@@ -156,11 +158,13 @@ jobs:
           node -e "const f='package.json';const j=require('./'+f);j.version='${version}';require('fs').writeFileSync(f, JSON.stringify(j,null,2)+'\n')"
 
           pushd src-tauri/gen/android
-          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
-          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
-          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
-          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
+          printf 'keyAlias=%s\npassword=%s\nstoreFile=%s\n' \
+            "$ANDROID_KEY_ALIAS" \
+            "$ANDROID_KEY_PASSWORD" \
+            "$RUNNER_TEMP/keystore.jks" > keystore.properties
           popd
+
+          printf '%s' "$ANDROID_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/keystore.jks"
 
           echo "Verifying Android keystore and alias..."
           test -s "$RUNNER_TEMP/keystore.jks"
@@ -170,6 +174,17 @@ jobs:
             -alias "$ANDROID_KEY_ALIAS" \
             >/dev/null
           echo "Android keystore alias verified."
+
+          cp "$RUNNER_TEMP/keystore.jks" "$RUNNER_TEMP/keystore-verify.jks"
+          keytool -keypasswd \
+            -keystore "$RUNNER_TEMP/keystore-verify.jks" \
+            -storepass "$ANDROID_KEY_PASSWORD" \
+            -keypass "$ANDROID_KEY_PASSWORD" \
+            -alias "$ANDROID_KEY_ALIAS" \
+            -new "$(openssl rand -hex 32)" \
+            >/dev/null
+          rm -f "$RUNNER_TEMP/keystore-verify.jks"
+          echo "Android private-key password verified."
 
           apk_path=src-tauri/gen/android/app/build/outputs/apk/universal/release
           arm64_apk=Readest_${version}_arm64.apk
