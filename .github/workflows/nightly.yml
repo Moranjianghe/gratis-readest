@@ -58,12 +58,12 @@ jobs:
             release: linux
             arch: x86_64
             rust_target: x86_64-unknown-linux-gnu
-            args: '--bundles deb'
+            args: '--bundles deb,appimage'
           - os: ubuntu-22.04-arm
             release: linux
             arch: aarch64
             rust_target: aarch64-unknown-linux-gnu
-            args: '--bundles deb'
+            args: '--bundles deb,appimage'
           - os: windows-latest
             release: windows
             arch: x86_64
@@ -212,6 +212,20 @@ jobs:
           pnpm tauri signer sign $arm64_apk
 
       # ──────────────────────────── DESKTOP ────────────────────────────
+      - name: install portable AppImage bundler (Linux)
+        if: matrix.config.release == 'linux'
+        run: cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --force
+
+      - name: pin AppImage runtime helper (Linux)
+        if: matrix.config.release == 'linux'
+        run: |
+          set -euo pipefail
+          cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/tauri"
+          mkdir -p "$cache_dir"
+          curl -fsSL --retry 3 -o "$cache_dir/quick-sharun.sh" \
+            "https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/b3a9e985cdedf7efa81d172f182cd13983743147/useful-tools/quick-sharun.sh"
+          chmod +x "$cache_dir/quick-sharun.sh"
+
       - name: build desktop bundles
         if: matrix.config.release != 'android'
         shell: bash
@@ -221,6 +235,7 @@ jobs:
         # outputs for all platforms (#4906).
         timeout-minutes: 45
         env:
+          TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: 'true'
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           NODE_OPTIONS: '--max-old-space-size=8192'
@@ -228,7 +243,11 @@ jobs:
           version="${{ needs.compute-version.outputs.nightly_version }}"
           node -e "const f='apps/readest-app/package.json';const j=require('./'+f);j.version='${version}';require('fs').writeFileSync(f, JSON.stringify(j,null,2)+'\n')"
           cd apps/readest-app
-          pnpm tauri build ${{ matrix.config.args }}
+          if [ "${{ matrix.config.release }}" = "linux" ]; then
+            cargo tauri build ${{ matrix.config.args }}
+          else
+            pnpm tauri build ${{ matrix.config.args }}
+          fi
 
       # ─────────────────────── COLLECT ARTIFACTS ───────────────────────
       # Each leg copies its updater artifacts (+ .sig) into ./nightly-out.
@@ -273,6 +292,12 @@ jobs:
               deb_path="${debs[0]}"
               deb_name="$(basename "$deb_path")"
               add_entry "$deb_path" "$deb_name"
+              if [ "${{ matrix.config.arch }}" = "x86_64" ]; then
+                appimage_name="Gratis Readest_${version}_amd64.AppImage"
+              else
+                appimage_name="Gratis Readest_${version}_aarch64.AppImage"
+              fi
+              add_entry "${bundle}/release/bundle/appimage/${appimage_name}" "$appimage_name"
               ;;
             windows)
               nsis_dir="target/${{ matrix.config.rust_target }}/release/bundle/nsis"
