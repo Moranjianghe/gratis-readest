@@ -214,7 +214,10 @@ jobs:
       # ──────────────────────────── DESKTOP ────────────────────────────
       - name: install portable AppImage bundler (Linux)
         if: matrix.config.release == 'linux'
-        run: cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --force
+        # The branch tip re-downloads quick-sharun.sh on every build and can
+        # hang indefinitely on GitHub-hosted Linux runners. This revision keeps
+        # the cache check used by the previously passing builds.
+        run: cargo install tauri-cli --git https://github.com/tauri-apps/tauri --rev 162626969b382d52faebdf6c7264460bd9a47d1f --force
 
       - name: pin AppImage runtime helper (Linux)
         if: matrix.config.release == 'linux'
