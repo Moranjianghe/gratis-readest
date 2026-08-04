@@ -58,12 +58,12 @@ jobs:
             release: linux
             arch: x86_64
             rust_target: x86_64-unknown-linux-gnu
-            args: '--bundles deb,appimage'
+            args: '--bundles deb,rpm,appimage'
           - os: ubuntu-22.04-arm
             release: linux
             arch: aarch64
             rust_target: aarch64-unknown-linux-gnu
-            args: '--bundles deb,appimage'
+            args: '--bundles deb,rpm,appimage'
           - os: windows-latest
             release: windows
             arch: x86_64
@@ -130,7 +130,7 @@ jobs:
         if: contains(matrix.config.os, 'ubuntu') && matrix.config.release != 'android'
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libfontconfig-dev libgtk-3-dev libwebkit2gtk-4.1 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 libappindicator3-dev librsvg2-dev patchelf xdg-utils
+          sudo apt-get install -y pkg-config libfontconfig-dev libgtk-3-dev libwebkit2gtk-4.1 libwebkit2gtk-4.1-dev libjavascriptcoregtk-4.1 libjavascriptcoregtk-4.1-dev gir1.2-javascriptcoregtk-4.1 gir1.2-webkit2-4.1 libappindicator3-dev librsvg2-dev patchelf rpm xdg-utils
 
       - name: create .env.local file for Next.js
         run: |
@@ -292,6 +292,16 @@ jobs:
               deb_path="${debs[0]}"
               deb_name="$(basename "$deb_path")"
               add_entry "$deb_path" "$deb_name"
+              rpm_dir="${bundle}/release/bundle/rpm"
+              mapfile -t rpms < <(find "$rpm_dir" -maxdepth 1 -type f -name '*.rpm' ! -name '*.sig' -print)
+              if [ "${#rpms[@]}" -ne 1 ]; then
+                echo "::error::expected exactly one RPM package in $rpm_dir"
+                printf '%s\n' "${rpms[@]}"
+                exit 1
+              fi
+              rpm_path="${rpms[0]}"
+              rpm_name="$(basename "$rpm_path")"
+              add_entry "$rpm_path" "$rpm_name"
               if [ "${{ matrix.config.arch }}" = "x86_64" ]; then
                 appimage_name="Gratis Readest_${version}_amd64.AppImage"
               else
