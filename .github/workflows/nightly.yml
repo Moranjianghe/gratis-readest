@@ -52,13 +52,28 @@ jobs:
         config:
           - os: ubuntu-latest
             release: android
-            arch: arm64
-            rust_target: aarch64-linux-android
+            arch: universal
+            rust_target: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
           - os: ubuntu-22.04
             release: linux
             arch: x86_64
             rust_target: x86_64-unknown-linux-gnu
             args: '--bundles deb'
+          - os: ubuntu-22.04-arm
+            release: linux
+            arch: aarch64
+            rust_target: aarch64-unknown-linux-gnu
+            args: '--bundles deb'
+          - os: windows-latest
+            release: windows
+            arch: x86_64
+            rust_target: x86_64-pc-windows-msvc
+            args: '--target x86_64-pc-windows-msvc --bundles nsis'
+          - os: windows-latest
+            release: windows
+            arch: aarch64
+            rust_target: aarch64-pc-windows-msvc
+            args: '--target aarch64-pc-windows-msvc --bundles nsis'
 
     runs-on: ${{ matrix.config.os }}
     # Backstop only — must stay ABOVE setup time + the per-step timeouts below.
@@ -187,7 +202,11 @@ jobs:
           echo "Android private-key password verified."
 
           apk_path=src-tauri/gen/android/app/build/outputs/apk/universal/release
+          universal_apk=Readest_${version}_universal.apk
           arm64_apk=Readest_${version}_arm64.apk
+          pnpm tauri android build
+          cp ${apk_path}/app-universal-release.apk $universal_apk
+          pnpm tauri signer sign $universal_apk
           pnpm tauri android build -t aarch64
           cp ${apk_path}/app-universal-release.apk $arm64_apk
           pnpm tauri signer sign $arm64_apk
@@ -240,6 +259,7 @@ jobs:
 
           case "$release" in
             android)
+              add_entry "apps/readest-app/Readest_${version}_universal.apk" "Readest_${version}_universal.apk"
               add_entry "apps/readest-app/Readest_${version}_arm64.apk" "Readest_${version}_arm64.apk"
               ;;
             linux)
@@ -253,6 +273,18 @@ jobs:
               deb_path="${debs[0]}"
               deb_name="$(basename "$deb_path")"
               add_entry "$deb_path" "$deb_name"
+              ;;
+            windows)
+              nsis_dir="target/${{ matrix.config.rust_target }}/release/bundle/nsis"
+              mapfile -t installers < <(find "$nsis_dir" -maxdepth 1 -type f -name '*.exe' ! -name '*.sig' -print)
+              if [ "${#installers[@]}" -ne 1 ]; then
+                echo "::error::expected exactly one Windows installer in $nsis_dir"
+                printf '%s\n' "${installers[@]}"
+                exit 1
+              fi
+              installer_path="${installers[0]}"
+              installer_name="$(basename "$installer_path")"
+              add_entry "$installer_path" "$installer_name"
               ;;
             *)
               echo "::error::unknown release leg: $release"; exit 1
