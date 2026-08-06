@@ -1970,5 +1970,17 @@
   "Sync Highlights and Bookmarks": "同步高亮与书签",
   "Sync Reading Statistics": "同步阅读统计",
   "Sync Reading Status": "同步阅读状态",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "在 BookOrbit 的“设置 > 集成 > KOReader”中创建 KOReader 凭据，然后连同服务器地址一起填写在这里。"
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "在 BookOrbit 的“设置 > 集成 > KOReader”中创建 KOReader 凭据，然后连同服务器地址一起填写在这里。",
+  "Release to remove bookmark": "松手移除书签",
+  "Pull down to remove bookmark": "下拉移除书签",
+  "Release to add bookmark": "松手添加书签",
+  "Pull down to add bookmark": "下拉添加书签",
+  "Sign in to Readest": "登录 Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "将您的书库、阅读进度和高亮在您的所有设备间同步。",
+  "or continue with email": "或使用邮箱继续",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "点击「设置按键」后，按下遥控器或键盘上的按钮，或使用 Apple Pencil 手势。",
+  "Pencil Double Tap": "Apple Pencil 轻点两下",
+  "Pencil Squeeze": "Apple Pencil 轻捏",
+  "Pages": "页数",
+  "Go to Page": "跳转到页码"
 }

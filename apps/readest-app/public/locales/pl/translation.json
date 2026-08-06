@@ -2108,5 +2108,17 @@
   "Sync Highlights and Bookmarks": "Synchronizuj zakreślenia i zakładki",
   "Sync Reading Statistics": "Synchronizuj statystyki czytania",
   "Sync Reading Status": "Synchronizuj status czytania",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Utwórz dane logowania KOReader w BookOrbit w Ustawienia > Integracje > KOReader, a następnie wprowadź je tutaj wraz z adresem serwera."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Utwórz dane logowania KOReader w BookOrbit w Ustawienia > Integracje > KOReader, a następnie wprowadź je tutaj wraz z adresem serwera.",
+  "Release to remove bookmark": "Puść, aby usunąć zakładkę",
+  "Pull down to remove bookmark": "Pociągnij w dół, aby usunąć zakładkę",
+  "Release to add bookmark": "Puść, aby dodać zakładkę",
+  "Pull down to add bookmark": "Pociągnij w dół, aby dodać zakładkę",
+  "Sign in to Readest": "Zaloguj się do Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Synchronizuj bibliotekę, postęp czytania i zaznaczenia na wszystkich swoich urządzeniach.",
+  "or continue with email": "lub kontynuuj przez e-mail",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Naciśnij przycisk na pilocie lub klawiaturze, albo użyj gestu Apple Pencil, po dotknięciu \"Ustaw klawisz\".",
+  "Pencil Double Tap": "Dwukrotne stuknięcie Apple Pencil",
+  "Pencil Squeeze": "Ściśnięcie Apple Pencil",
+  "Pages": "Strony",
+  "Go to Page": "Przejdź do strony"
 }

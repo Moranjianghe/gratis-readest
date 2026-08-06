@@ -2108,5 +2108,17 @@
   "Sync Highlights and Bookmarks": "Sinhroniziraj poudarke in zaznamke",
   "Sync Reading Statistics": "Sinhroniziraj bralno statistiko",
   "Sync Reading Status": "Sinhroniziraj bralni status",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "V BookOrbitu ustvarite poverilnice KOReader v Nastavitve > Integracije > KOReader, nato jih vnesite tukaj skupaj z naslovom strežnika."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "V BookOrbitu ustvarite poverilnice KOReader v Nastavitve > Integracije > KOReader, nato jih vnesite tukaj skupaj z naslovom strežnika.",
+  "Release to remove bookmark": "Spustite za odstranitev zaznamka",
+  "Pull down to remove bookmark": "Povlecite navzdol za odstranitev zaznamka",
+  "Release to add bookmark": "Spustite za dodajanje zaznamka",
+  "Pull down to add bookmark": "Povlecite navzdol za dodajanje zaznamka",
+  "Sign in to Readest": "Prijavite se v Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Sinhronizirajte knjižnico, napredek branja in označbe v vseh svojih napravah.",
+  "or continue with email": "ali nadaljujte z e-pošto",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Pritisnite gumb na daljinskem upravljalniku ali tipkovnici, ali uporabite potezo Apple Pencil, po tapkanju na \"Nastavi tipko\".",
+  "Pencil Double Tap": "Dvojni dotik Apple Pencil",
+  "Pencil Squeeze": "Stisk Apple Pencil",
+  "Pages": "Strani",
+  "Go to Page": "Pojdi na stran"
 }

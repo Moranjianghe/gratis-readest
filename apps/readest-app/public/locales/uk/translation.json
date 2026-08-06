@@ -2108,5 +2108,17 @@
   "Sync Highlights and Bookmarks": "Синхронізувати виділення та закладки",
   "Sync Reading Statistics": "Синхронізувати статистику читання",
   "Sync Reading Status": "Синхронізувати статус читання",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Створіть облікові дані KOReader у BookOrbit у розділі Налаштування > Інтеграції > KOReader, а потім введіть їх тут разом з адресою сервера."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Створіть облікові дані KOReader у BookOrbit у розділі Налаштування > Інтеграції > KOReader, а потім введіть їх тут разом з адресою сервера.",
+  "Release to remove bookmark": "Відпустіть, щоб видалити закладку",
+  "Pull down to remove bookmark": "Потягніть вниз, щоб видалити закладку",
+  "Release to add bookmark": "Відпустіть, щоб додати закладку",
+  "Pull down to add bookmark": "Потягніть вниз, щоб додати закладку",
+  "Sign in to Readest": "Увійдіть у Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Синхронізуйте свою бібліотеку, проґрес читання та виділення на всіх своїх пристроях.",
+  "or continue with email": "або продовжте з ел. поштою",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Натисніть кнопку на пульті або клавіатурі, або скористайтеся жестом Apple Pencil після натискання \"Призначити клавішу\".",
+  "Pencil Double Tap": "Подвійний дотик Apple Pencil",
+  "Pencil Squeeze": "Стискання Apple Pencil",
+  "Pages": "Сторінки",
+  "Go to Page": "Перейти до сторінки"
 }

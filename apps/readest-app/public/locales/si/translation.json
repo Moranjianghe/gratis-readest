@@ -2016,5 +2016,17 @@
   "Sync Highlights and Bookmarks": "උද්දීපන සහ පිටු සලකුණු සමමුහුර්ත කරන්න",
   "Sync Reading Statistics": "කියවීමේ සංඛ්‍යාලේඛන සමමුහුර්ත කරන්න",
   "Sync Reading Status": "කියවීමේ තත්ත්වය සමමුහුර්ත කරන්න",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit හි සැකසුම් > ඒකාබද්ධතා > KOReader යටතේ KOReader අක්තපත්‍ර සාදා, ඉන්පසු ඒවා ඔබගේ සේවාදායක ලිපිනය සමඟ මෙහි ඇතුළත් කරන්න."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit හි සැකසුම් > ඒකාබද්ධතා > KOReader යටතේ KOReader අක්තපත්‍ර සාදා, ඉන්පසු ඒවා ඔබගේ සේවාදායක ලිපිනය සමඟ මෙහි ඇතුළත් කරන්න.",
+  "Release to remove bookmark": "සටහන් ඉවත් කිරීමට අත හරින්න",
+  "Pull down to remove bookmark": "සටහන් ඉවත් කිරීමට පහළට අදින්න",
+  "Release to add bookmark": "සටහන් එකතු කිරීමට අත හරින්න",
+  "Pull down to add bookmark": "සටහන් එකතු කිරීමට පහළට අදින්න",
+  "Sign in to Readest": "Readest වෙත පුරන්න",
+  "Sync your library, reading progress, and highlights across your devices.": "ඔබේ පුස්තකාලය, කියවීමේ ප්‍රගතිය සහ ඉස්මතු කිරීම් ඔබේ සියලුම උපාංග හරහා සමමුහුර්ත කරන්න.",
+  "or continue with email": "නැතහොත් විද්‍යුත් තැපෑලෙන් ඉදිරියට යන්න",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "\"යතුර සකසන්න\" තට්ටු කිරීමෙන් පසු ඔබේ දුරස්ථ පාලකයේ හෝ යතුරු පුවරුවේ බොත්තමක් එබෙන්න, නැතහොත් Apple Pencil ඉංගිතයක් භාවිතා කරන්න.",
+  "Pencil Double Tap": "Apple Pencil දෙවරක් තට්ටු කිරීම",
+  "Pencil Squeeze": "Apple Pencil තද කිරීම",
+  "Pages": "පිටු ගණන",
+  "Go to Page": "පිටුවට යන්න"
 }

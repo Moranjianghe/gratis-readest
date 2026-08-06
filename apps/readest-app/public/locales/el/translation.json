@@ -2016,5 +2016,17 @@
   "Sync Highlights and Bookmarks": "Συγχρονισμός επισημάνσεων και σελιδοδεικτών",
   "Sync Reading Statistics": "Συγχρονισμός στατιστικών ανάγνωσης",
   "Sync Reading Status": "Συγχρονισμός κατάστασης ανάγνωσης",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Δημιουργήστε διαπιστευτήρια KOReader στο BookOrbit από Ρυθμίσεις > Ενσωματώσεις > KOReader και εισαγάγετέ τα εδώ μαζί με τη διεύθυνση του διακομιστή σας."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Δημιουργήστε διαπιστευτήρια KOReader στο BookOrbit από Ρυθμίσεις > Ενσωματώσεις > KOReader και εισαγάγετέ τα εδώ μαζί με τη διεύθυνση του διακομιστή σας.",
+  "Release to remove bookmark": "Αφήστε για αφαίρεση σελιδοδείκτη",
+  "Pull down to remove bookmark": "Τραβήξτε προς τα κάτω για αφαίρεση σελιδοδείκτη",
+  "Release to add bookmark": "Αφήστε για προσθήκη σελιδοδείκτη",
+  "Pull down to add bookmark": "Τραβήξτε προς τα κάτω για προσθήκη σελιδοδείκτη",
+  "Sign in to Readest": "Συνδεθείτε στο Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Συγχρονίστε τη βιβλιοθήκη, την πρόοδο ανάγνωσης και τις επισημάνσεις σας σε όλες τις συσκευές σας.",
+  "or continue with email": "ή συνεχίστε με email",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Πατήστε ένα κουμπί στο τηλεχειριστήριο ή το πληκτρολόγιό σας, ή χρησιμοποιήστε μια χειρονομία Apple Pencil, αφού πατήσετε «Ορισμός πλήκτρου».",
+  "Pencil Double Tap": "Διπλό άγγιγμα Apple Pencil",
+  "Pencil Squeeze": "Πίεση Apple Pencil",
+  "Pages": "Σελίδες",
+  "Go to Page": "Μετάβαση σε σελίδα"
 }

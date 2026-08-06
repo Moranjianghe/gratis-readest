@@ -1970,5 +1970,17 @@
   "Sync Highlights and Bookmarks": "Đồng bộ phần tô sáng và dấu trang",
   "Sync Reading Statistics": "Đồng bộ thống kê đọc",
   "Sync Reading Status": "Đồng bộ trạng thái đọc",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Tạo thông tin đăng nhập KOReader trong BookOrbit tại Cài đặt > Tích hợp > KOReader, sau đó nhập chúng vào đây cùng với địa chỉ máy chủ của bạn."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Tạo thông tin đăng nhập KOReader trong BookOrbit tại Cài đặt > Tích hợp > KOReader, sau đó nhập chúng vào đây cùng với địa chỉ máy chủ của bạn.",
+  "Release to remove bookmark": "Thả ra để xóa đánh dấu",
+  "Pull down to remove bookmark": "Kéo xuống để xóa đánh dấu",
+  "Release to add bookmark": "Thả ra để thêm đánh dấu",
+  "Pull down to add bookmark": "Kéo xuống để thêm đánh dấu",
+  "Sign in to Readest": "Đăng nhập vào Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Đồng bộ thư viện, tiến trình đọc và điểm nổi bật của bạn trên tất cả thiết bị của bạn.",
+  "or continue with email": "hoặc tiếp tục bằng email",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Nhấn một nút trên bộ điều khiển từ xa hoặc bàn phím, hoặc dùng cử chỉ Apple Pencil, sau khi chạm \"Đặt phím\".",
+  "Pencil Double Tap": "Chạm hai lần Apple Pencil",
+  "Pencil Squeeze": "Bóp Apple Pencil",
+  "Pages": "Số trang",
+  "Go to Page": "Đi đến trang"
 }

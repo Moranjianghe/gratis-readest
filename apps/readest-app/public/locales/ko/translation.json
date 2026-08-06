@@ -1970,5 +1970,17 @@
   "Sync Highlights and Bookmarks": "하이라이트 및 북마크 동기화",
   "Sync Reading Statistics": "읽기 통계 동기화",
   "Sync Reading Status": "읽기 상태 동기화",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit의 설정 > 통합 > KOReader에서 KOReader 자격 증명을 만든 다음 서버 주소와 함께 여기에 입력하세요."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit의 설정 > 통합 > KOReader에서 KOReader 자격 증명을 만든 다음 서버 주소와 함께 여기에 입력하세요.",
+  "Release to remove bookmark": "손을 떼면 북마크 제거",
+  "Pull down to remove bookmark": "아래로 당겨 북마크 제거",
+  "Release to add bookmark": "손을 떼면 북마크 추가",
+  "Pull down to add bookmark": "아래로 당겨 북마크 추가",
+  "Sign in to Readest": "Readest에 로그인",
+  "Sync your library, reading progress, and highlights across your devices.": "라이브러리, 읽기 진행 상황, 하이라이트를 모든 기기에서 동기화합니다.",
+  "or continue with email": "또는 이메일로 계속",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "\"키 설정\"을 탭한 후 리모컨 또는 키보드의 버튼을 누르거나 Apple Pencil 제스처를 사용하세요.",
+  "Pencil Double Tap": "Apple Pencil 이중 탭",
+  "Pencil Squeeze": "Apple Pencil 스퀴즈",
+  "Pages": "페이지 수",
+  "Go to Page": "페이지로 이동"
 }

@@ -2016,5 +2016,17 @@
   "Sync Highlights and Bookmarks": "Vurguları ve Yer İmlerini Eşitle",
   "Sync Reading Statistics": "Okuma İstatistiklerini Eşitle",
   "Sync Reading Status": "Okuma Durumunu Eşitle",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit'te Ayarlar > Entegrasyonlar > KOReader altında KOReader kimlik bilgileri oluşturun, ardından bunları sunucu adresinizle birlikte buraya girin."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit'te Ayarlar > Entegrasyonlar > KOReader altında KOReader kimlik bilgileri oluşturun, ardından bunları sunucu adresinizle birlikte buraya girin.",
+  "Release to remove bookmark": "Yer işaretini kaldırmak için bırakın",
+  "Pull down to remove bookmark": "Yer işaretini kaldırmak için aşağı çekin",
+  "Release to add bookmark": "Yer işareti eklemek için bırakın",
+  "Pull down to add bookmark": "Yer işareti eklemek için aşağı çekin",
+  "Sign in to Readest": "Readest'e giriş yapın",
+  "Sync your library, reading progress, and highlights across your devices.": "Kütüphanenizi, okuma ilerlemenizi ve vurgularınızı tüm cihazlarınızda senkronize edin.",
+  "or continue with email": "veya e-posta ile devam edin",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "\"Tuş ayarla\" düğmesine dokunduktan sonra uzaktan kumandanızdaki veya klavyenizdeki bir düğmeye basın ya da bir Apple Pencil hareketi kullanın.",
+  "Pencil Double Tap": "Apple Pencil çift dokunma",
+  "Pencil Squeeze": "Apple Pencil sıkma",
+  "Pages": "Sayfalar",
+  "Go to Page": "Sayfaya Git"
 }

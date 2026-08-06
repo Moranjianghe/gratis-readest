@@ -1970,5 +1970,17 @@
   "Sync Highlights and Bookmarks": "གསལ་མདངས་དང་དཔེ་རྟགས་མཉམ་འགྲིག",
   "Sync Reading Statistics": "ཀློག་པའི་གྲངས་ཐོ་མཉམ་འགྲིག",
   "Sync Reading Status": "ཀློག་པའི་གནས་སྟངས་མཉམ་འགྲིག",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit ནང་ སྒྲིག་འགོད > མཉམ་སྦྲེལ > KOReader ནང་ KOReader ཐོབ་ཐང་བཟོས་རྗེས་ ཞབས་ཞུ་བའི་ཁ་བྱང་དང་མཉམ་དུ་འདིར་བྲིས།"
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "BookOrbit ནང་ སྒྲིག་འགོད > མཉམ་སྦྲེལ > KOReader ནང་ KOReader ཐོབ་ཐང་བཟོས་རྗེས་ ཞབས་ཞུ་བའི་ཁ་བྱང་དང་མཉམ་དུ་འདིར་བྲིས།",
+  "Release to remove bookmark": "དེབ་གྲངས་འདོར་བར་ལག་པ་གློད།",
+  "Pull down to remove bookmark": "དེབ་གྲངས་འདོར་བར་མར་འཐེན།",
+  "Release to add bookmark": "དེབ་གྲངས་སྣོན་པར་ལག་པ་གློད།",
+  "Pull down to add bookmark": "དེབ་གྲངས་སྣོན་པར་མར་འཐེན།",
+  "Sign in to Readest": "Readest ལ་ཐོ་འཇུག་བྱེད།",
+  "Sync your library, reading progress, and highlights across your devices.": "ཁྱེད་ཀྱི་དཔེ་མཛོད་དང་། ཀློག་པའི་ཡར་འཕེལ། གཙོ་གནད་བཅས་ཁྱེད་ཀྱི་སྒྲིག་ཆས་ཡོངས་ལ་མཉམ་སྒྲིག་བྱེད།",
+  "or continue with email": "ཡང་ན་གློག་འཕྲིན་བརྒྱུད་ནས་མུ་མཐུད།",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "\"མཐེབ་གཞི་གཏན་འཁེལ།\" ལ་རེག་རྗེས། ཁྱེད་ཀྱི་རྒྱང་འཐེན་སྒྲིག་ཆས་སམ་མཐེབ་གཞི་གང་རུང་གི་ཐོག་མཐེབ་གཅིག་གནོན་པའམ། ཡང་ན་ Apple Pencil གྱི་ལག་བརྡ་བེད་སྤྱོད་བྱོས།",
+  "Pencil Double Tap": "Apple Pencil ཐེངས་གཉིས་རེག་པ།",
+  "Pencil Squeeze": "Apple Pencil བཙིར་བ།",
+  "Pages": "ཤོག་གྲངས།",
+  "Go to Page": "ཤོག་ངོས་སུ་སྐྱོད།"
 }

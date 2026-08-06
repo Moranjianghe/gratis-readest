@@ -1970,5 +1970,17 @@
   "Sync Highlights and Bookmarks": "Segerakkan Sorotan dan Penanda Buku",
   "Sync Reading Statistics": "Segerakkan Statistik Pembacaan",
   "Sync Reading Status": "Segerakkan Status Pembacaan",
-  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Cipta kelayakan KOReader dalam BookOrbit di Tetapan > Integrasi > KOReader, kemudian masukkannya di sini bersama alamat pelayan anda."
+  "Create KOReader credentials in BookOrbit under Settings > Integrations > KOReader, then enter them here with your server address.": "Cipta kelayakan KOReader dalam BookOrbit di Tetapan > Integrasi > KOReader, kemudian masukkannya di sini bersama alamat pelayan anda.",
+  "Release to remove bookmark": "Lepaskan untuk mengalih keluar tandabuku",
+  "Pull down to remove bookmark": "Tarik ke bawah untuk mengalih keluar tandabuku",
+  "Release to add bookmark": "Lepaskan untuk menambah tandabuku",
+  "Pull down to add bookmark": "Tarik ke bawah untuk menambah tandabuku",
+  "Sign in to Readest": "Log masuk ke Readest",
+  "Sync your library, reading progress, and highlights across your devices.": "Segerakkan perpustakaan, kemajuan bacaan dan penonjolan anda merentas semua peranti anda.",
+  "or continue with email": "atau teruskan dengan e-mel",
+  "Press a button on your remote controller or keyboard, or use an Apple Pencil gesture, after tapping \"Set key\".": "Tekan butang pada pengawal jauh atau papan kekunci anda, atau gunakan gerak isyarat Apple Pencil, selepas mengetuk \"Tetapkan kekunci\".",
+  "Pencil Double Tap": "Ketik Dua Kali Apple Pencil",
+  "Pencil Squeeze": "Picit Apple Pencil",
+  "Pages": "Jumlah Halaman",
+  "Go to Page": "Pergi ke Halaman"
 }
