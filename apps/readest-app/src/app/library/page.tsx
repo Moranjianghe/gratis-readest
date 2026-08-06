@@ -14,7 +14,7 @@ import {
   normalizeFilePathForIndex,
   selectNewImportableFiles,
 } from '@/services/bookService';
-import { navigateToLibrary, navigateToLogin, navigateToReader } from '@/utils/nav';
+import { navigateToLibrary, navigateToReader } from '@/utils/nav';
 import { getBookWithUpdatedMetadata, listFormater } from '@/utils/book';
 import { getImportErrorMessage } from '@/services/errors';
 import { ingestFile } from '@/services/ingestService';
@@ -315,18 +315,10 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
   usePullToRefresh(
     scrollRef,
     async () => {
-      if (!user) {
-        navigateToLogin(router);
-        return;
-      }
       await pullLibrary(false, true);
       checkOPDSSubscriptions(true);
     },
     async () => {
-      if (!user) {
-        navigateToLogin(router);
-        return;
-      }
       await pullLibrary(true, true);
       checkOPDSSubscriptions(true);
     },
