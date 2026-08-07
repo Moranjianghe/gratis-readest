@@ -33,6 +33,7 @@ Default permissions for the plugin
 - `allow-get-lookup-dictionary`
 - `allow-clear-lookup-dictionary`
 - `allow-select-directory`
+- `allow-show-file-picker`
 - `allow-get-storefront-region-code`
 - `allow-request-manage-storage-permission`
 - `allow-register-listener`
@@ -51,8 +52,10 @@ Default permissions for the plugin
 - `allow-refresh-eink-screen`
 - `allow-update-reading-widget`
 - `allow-capture-webview-region`
-- `allow-set-text-selection-suppressed`
+- `allow-set-selection-suppressed`
 - `allow-read-share-clip-html`
+- `allow-icloud-container-status`
+- `allow-icloud-ensure-downloaded`
 
 ## Permission Table
 
@@ -768,6 +771,58 @@ Denies the iap_restore_purchases command without any pre-configured scope.
 <tr>
 <td>
 
+`native-bridge:allow-icloud-container-status`
+
+</td>
+<td>
+
+Enables the icloud_container_status command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`native-bridge:deny-icloud-container-status`
+
+</td>
+<td>
+
+Denies the icloud_container_status command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`native-bridge:allow-icloud-ensure-downloaded`
+
+</td>
+<td>
+
+Enables the icloud_ensure_downloaded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`native-bridge:deny-icloud-ensure-downloaded`
+
+</td>
+<td>
+
+Denies the icloud_ensure_downloaded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `native-bridge:allow-install-package`
 
 </td>
@@ -1210,6 +1265,32 @@ Denies the set_secure_item command without any pre-configured scope.
 <tr>
 <td>
 
+`native-bridge:allow-set-selection-suppressed`
+
+</td>
+<td>
+
+Enables the set_selection_suppressed command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`native-bridge:deny-set-selection-suppressed`
+
+</td>
+<td>
+
+Denies the set_selection_suppressed command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `native-bridge:allow-set-sync-passphrase`
 
 </td>
@@ -1262,12 +1343,12 @@ Denies the set_system_ui_visibility command without any pre-configured scope.
 <tr>
 <td>
 
-`native-bridge:allow-set-text-selection-suppressed`
+`native-bridge:allow-show-file-picker`
 
 </td>
 <td>
 
-Enables the set_text_selection_suppressed command without any pre-configured scope.
+Enables the show_file_picker command without any pre-configured scope.
 
 </td>
 </tr>
@@ -1275,12 +1356,12 @@ Enables the set_text_selection_suppressed command without any pre-configured sco
 <tr>
 <td>
 
-`native-bridge:deny-set-text-selection-suppressed`
+`native-bridge:deny-show-file-picker`
 
 </td>
 <td>
 
-Denies the set_text_selection_suppressed command without any pre-configured scope.
+Denies the show_file_picker command without any pre-configured scope.
 
 </td>
 </tr>
