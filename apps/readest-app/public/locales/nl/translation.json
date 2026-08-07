@@ -2028,5 +2028,19 @@
   "Pencil Double Tap": "Apple Pencil dubbel tikken",
   "Pencil Squeeze": "Apple Pencil knijpen",
   "Pages": "Pagina's",
-  "Go to Page": "Ga naar pagina"
+  "Go to Page": "Ga naar pagina",
+  "Turn Off": "Uitschakelen",
+  "iCloud is not available on this device.": "iCloud is niet beschikbaar op dit apparaat.",
+  "Sign in to iCloud in System Settings and make sure iCloud Drive is turned on.": "Log in bij iCloud in Systeeminstellingen en zorg dat iCloud Drive is ingeschakeld.",
+  "Use iCloud": "iCloud gebruiken",
+  "Your library is stored in your iCloud Drive and counts against its storage.": "Je bibliotheek wordt opgeslagen in je iCloud Drive en telt mee voor de opslagruimte.",
+  "iCloud": "iCloud",
+  "Sync your library, reading progress, and highlights with your iCloud Drive.": "Synchroniseer je bibliotheek, leesvoortgang en markeringen met je iCloud Drive.",
+  "Sync with iCloud": "Synchroniseren met iCloud",
+  "Delete All Books?": "Alle boeken verwijderen?",
+  "This action cannot be undone. Every book will be removed from this device and from your Readest cloud library, along with reading progress, bookmarks, and annotations. Books you imported in place keep their original files, and books uploaded to cloud storage stay there until you remove them under Manage Storage. Other signed-in devices keep their own copies.": "Deze actie kan niet ongedaan worden gemaakt. Elk boek wordt van dit apparaat en uit je Readest-cloudbibliotheek verwijderd, samen met leesvoortgang, bladwijzers en aantekeningen. Boeken die je ter plaatse hebt geïmporteerd behouden hun originele bestanden, en boeken die naar de cloudopslag zijn geüpload blijven daar totdat je ze verwijdert via ‘Opslag beheren’. Andere aangemelde apparaten behouden hun eigen kopieën.",
+  "Danger Zone": "Gevarenzone",
+  "Delete All Books": "Alle boeken verwijderen",
+  "All books deleted.": "Alle boeken verwijderd.",
+  "Failed to delete books. Please try again later.": "Kan boeken niet verwijderen. Probeer het later opnieuw."
 }
