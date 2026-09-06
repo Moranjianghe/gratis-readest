@@ -10,7 +10,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useResponsiveSize } from '@/hooks/useResponsiveSize';
 import { useDragScroll } from '@/hooks/useDragScroll';
 import { saveSysSettings } from '@/helpers/settings';
-import { HIGHLIGHT_COLOR_HEX, LONG_HOLD_THRESHOLD } from '@/services/constants';
+import { LONG_HOLD_THRESHOLD } from '@/services/constants';
 import { getHighlightColorLabel } from '../../utils/annotatorUtil';
 import { stubTranslation as _ } from '@/utils/misc';
 
@@ -151,6 +151,18 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
     };
   }, []);
 
+  /**
+   * The color a style would be drawn in, resolved to a hex the same way the
+   * color strip resolves its dots. The selected style's live color lives in
+   * local state -- the store lags a tick behind the tap -- so read that first
+   * and fall back to the style's stored binding.
+   */
+  const resolveStyleColor = (style: HighlightStyle): string => {
+    const color =
+      selectedStyle === style ? selectedColor : globalReadSettings.highlightStyles[style];
+    return customColors[color] || color;
+  };
+
   const handleSelectStyle = (style: HighlightStyle) => {
     const newGlobalReadSettings = { ...globalReadSettings, highlightStyle: style };
     saveSysSettings(envConfig, 'globalReadSettings', newGlobalReadSettings);
@@ -204,7 +216,7 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
             aria-label={_('Select {{style}} style', { style: _(style) })}
             onClick={() => handleSelectStyle(style)}
             className={clsx(
-              'eink-bordered not-eink:shadow-sm flex items-center justify-center rounded-full p-0',
+              'eink-bordered not-eink:shadow-xs flex items-center justify-center rounded-full p-0',
               'bg-base-300 theme-dark:bg-base-100',
               selectedStyle === style
                 ? 'border-current border-2'
@@ -216,24 +228,36 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
               style={{
                 width: size16,
                 height: size16,
-                // The marker swatch is always the yellow highlighter, so its
+                // The marker swatch is a block of the highlighter color, so its
                 // glyph needs a fixed dark ink -- base-content would be white on
-                // yellow in dark themes. B&W e-ink has no yellow to show.
+                // a light marker in dark themes. The highlight palette is all
+                // light tones, so dark ink stays legible on every color. B&W
+                // e-ink has no color to show.
                 ...(style === 'highlight' && {
-                  backgroundColor: isBwEink ? einkFgColor : HIGHLIGHT_COLOR_HEX['yellow'],
+                  backgroundColor: isBwEink ? einkFgColor : resolveStyleColor(style),
                   color: isBwEink ? einkBgColor : '#1f2937',
                 }),
+                // Only the rule carries the color, like the overlayer, which
+                // strokes the line in the annotation color over untouched text.
                 ...((style === 'underline' || style === 'squiggly') && {
                   textDecoration: 'underline',
                   textDecorationThickness: '2px',
-                  textUnderlineOffset: style === 'squiggly' ? '1px' : '3px',
+                  textUnderlineOffset: style === 'squiggly' ? '2px' : '2px',
+                  textDecorationColor: isBwEink ? einkFgColor : resolveStyleColor(style),
                 }),
                 ...(style === 'squiggly' && { textDecorationStyle: 'wavy' }),
               }}
               className={clsx(
-                'text-base-content decoration-inherit rounded-sm p-0 leading-none',
+                'decoration-inherit rounded-xs p-0 leading-none',
+                // The marker glyph always sets its own ink above, so it must
+                // stay off `text-base-content`: the e-ink rule for that class
+                // flattens the color with `!important`, which outranks the
+                // inline style and painted the "A" base-content on a
+                // base-content chip -- a solid black square (#5667). The rules
+                // carry no inline ink and do want the flattening.
+                style !== 'highlight' && 'text-base-content',
                 style === 'highlight' ? 'flex items-center justify-center' : 'text-center',
-                style === 'underline' || style === 'squiggly' ? 'sm:mt-[-2px]' : '',
+                style === 'underline' || style === 'squiggly' ? 'sm:-mt-0.5' : '',
               )}
             >
               {style === 'highlight' ? (
@@ -257,7 +281,7 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
           title={_('Apply to every occurrence in the book')}
           onClick={() => onToggleGlobal?.()}
           className={clsx(
-            'not-eink:border-base-content/20 eink-bordered not-eink:shadow-sm flex flex-shrink-0 items-center justify-center rounded-full border p-0 transition-colors',
+            'not-eink:border-base-content/20 eink-bordered not-eink:shadow-xs flex shrink-0 items-center justify-center rounded-full border p-0 transition-colors',
             'bg-base-300 theme-dark:bg-base-100',
             globalToggleActive
               ? 'not-eink:text-primary'
@@ -273,7 +297,7 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
         ref={colorStripRef}
         {...stripPointerHandlers}
         className={clsx(
-          'not-eink:border-base-content/20 eink-bordered not-eink:shadow-sm flex items-center gap-2 rounded-3xl border',
+          'not-eink:border-base-content/20 eink-bordered not-eink:shadow-xs flex items-center gap-2 rounded-3xl border',
           'bg-base-300 theme-dark:bg-base-100',
           isVertical ? 'flex-col overflow-y-auto py-2' : 'min-w-0 flex-row overflow-x-auto px-2',
           !isVertical && 'cursor-grab',
@@ -320,7 +344,10 @@ const HighlightOptions: React.FC<HighlightOptionsProps> = ({
                   {selectedColor === color && (
                     <FaCheck
                       size={size10}
-                      className='text-base-content'
+                      // Same reason as the marker glyph: on B&W e-ink the dot
+                      // is a base-content disc, so the check sets its own
+                      // contrasting ink and must not be flattened back.
+                      className={clsx(!isBwEink && 'text-base-content')}
                       style={isBwEink ? { color: einkBgColor } : undefined}
                     />
                   )}
