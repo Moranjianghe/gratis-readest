@@ -15,11 +15,12 @@ import type { PlanType } from '@/types/quota';
 import { navigateToLibrary } from '@/utils/nav';
 import { eventDispatcher } from '@/utils/event';
 import { isTauriAppPlatform } from '@/services/environment';
-import { getPlanDetails } from './utils/plan';
+import { getPlanDetails, shouldUseBillingPortal } from './utils/plan';
 import { Toast } from '@/components/Toast';
 import {
   purchaseIAPProduct,
   restoreIAPPurchases,
+  verifyApplePurchaseProducts,
   verifyGooglePurchaseProducts,
   getSubscriptionSuccessUrl as getIAPSubscriptionSuccessUrl,
 } from '@/libs/payment/iap/client';
@@ -32,6 +33,7 @@ import {
   handleStripeCheckoutError,
   getSubscriptionSuccessUrl as getStripeSubscriptionSuccessUrl,
   type StripeAvailablePlan,
+  type StripePortalFlow,
 } from '@/libs/payment/stripe/client';
 import LegalLinks from '@/components/LegalLinks';
 import Spinner from '@/components/Spinner';
@@ -91,7 +93,7 @@ const ProfilePage = () => {
 
   useTheme({ systemUIVisible: false });
 
-  const { quotas, userProfilePlan = 'free' } = useQuotaStats();
+  const { quotas, userProfilePlan = 'free', customizationPurchased } = useQuotaStats();
   const {
     handleLogout,
     handleResetPassword,
@@ -130,6 +132,14 @@ const ProfilePage = () => {
 
   const handleStripeSubscribe = async (productId?: string, planType: PlanType = 'subscription') => {
     if (!productId) return;
+
+    // Someone who already holds a subscription changes plan or billing period
+    // in the billing portal. Opening a second checkout session would leave the
+    // old subscription running alongside the new one and bill them twice.
+    if (shouldUseBillingPortal(userProfilePlan, planType)) {
+      await openStripePortal('subscription_update');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -201,8 +211,11 @@ const ProfilePage = () => {
       if (purchases.length > 0) {
         // Restored one-time purchases (storage add-ons) may still be
         // unconsumed on Google Play, blocking repurchase; re-verifying lets
-        // the server consume them.
+        // the server consume them. On iOS, restore is the only flow that can
+        // record a purchase whose original verification never reached the
+        // server, so re-verify those too.
         await verifyGooglePurchaseProducts(purchases);
+        await verifyApplePurchaseProducts(purchases);
         const restoredSubscriptions = purchases
           .filter((p) => !isPurchaseProduct(p.productId))
           .sort((a, b) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime());
@@ -234,10 +247,10 @@ const ProfilePage = () => {
     setLoading(false);
   };
 
-  const handleManageSubscription = async () => {
+  const openStripePortal = async (flow?: StripePortalFlow) => {
     setLoading(true);
     try {
-      const url = await createStripePortalSession();
+      const url = await createStripePortalSession(flow);
       await redirectToStripePortal(url);
     } catch (error) {
       console.error('Error creating portal session:', error);
@@ -249,6 +262,8 @@ const ProfilePage = () => {
       setLoading(false);
     }
   };
+
+  const handleManageSubscription = () => openStripePortal();
 
   const handleDeleteWithMessage = () => {
     handleConfirmDelete(_('Failed to delete user. Please try again later.'));
@@ -358,6 +373,7 @@ const ProfilePage = () => {
                       <PlansComparison
                         availablePlans={availablePlans}
                         userPlan={userProfilePlan}
+                        customizationPurchased={customizationPurchased}
                         onSubscribe={
                           appService.hasIAP && iapAvailable
                             ? handleIAPSubscribe
