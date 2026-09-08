@@ -289,7 +289,7 @@ describe('isCloudSyncAllowed — customization unlock', () => {
     expect(isCloudSyncAllowed('purchase', true)).toBe(true);
   });
 
-  test('does not entitle a storage-only buyer after the grace period', () => {
-    expect(isCloudSyncAllowed('purchase', false)).toBe(false);
+  test('entitles a storage-only buyer when cloud sync is ungated', () => {
+    expect(isCloudSyncAllowed('purchase', false)).toBe(true);
   });
 });

@@ -58,6 +58,7 @@ import {
   canToggleCloudProvider,
   getReadestCloudRowStatus,
   getThirdPartyRowStatus,
+  shouldShowCloudProviderBadge,
 } from './integrations/cloudSyncStatus';
 import {
   getCloudSyncProviders,
