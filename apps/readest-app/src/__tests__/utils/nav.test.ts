@@ -33,6 +33,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { isPWA, isTauriAppPlatform, isWebAppPlatform } from '@/services/environment';
+import { APP_NAME } from '@/config/appConfig';
 import {
   navigateToReader,
   navigateToLogin,
@@ -349,7 +350,7 @@ describe('showReaderWindow', () => {
     const options = constructorCall[1]!;
     // The overlay title bar hides its title text natively, so the window is
     // named like every other platform's.
-    expect(options.title).toBe('Readest');
+    expect(options.title).toBe(APP_NAME);
     expect(options.decorations).toBe(true);
     expect(options.titleBarStyle).toBe('overlay');
   });
