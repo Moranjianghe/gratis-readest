@@ -30,7 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
+          # A scheduled run uses the repository's default branch here; a
+          # manually dispatched run must build the branch it was dispatched
+          # from, otherwise the version stamp and frontend source can come
+          # from different trees (e.g. the Popup black-corner fix).
+          ref: ${{ github.ref_name }}
           persist-credentials: false
       - id: v
         run: |
@@ -87,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
           persist-credentials: false
 
       - name: initialize git submodules
@@ -503,7 +507,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
           persist-credentials: false
 
       - name: Build LocalSend helper binaries for KOReader (static musl armv7 + arm64)
