@@ -425,6 +425,9 @@ jobs:
           # +=: tauri.conf.json already ships the AppRun hook entry.
           conf=apps/readest-app/src-tauri/tauri.conf.json
           jq --arg d "$lib_dir" '.bundle.linux.appimage.files += {
+              "/usr/lib/libsoftokn3.so": ($d + "/libsoftokn3.so"),
+              "/usr/lib/libfreeblpriv3.so": ($d + "/libfreeblpriv3.so"),
+              "/usr/lib/libnssckbi.so": ($d + "/libnssckbi.so"),
               "/usr/lib/libspeechd.so.2": ($d + "/libspeechd.so.2"),
               "/usr/lib/libxkbcommon-x11.so.0": ($d + "/libxkbcommon-x11.so.0")
             }' "$conf" > "$conf.tmp" && mv "$conf.tmp" "$conf"
