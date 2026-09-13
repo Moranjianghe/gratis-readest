@@ -444,7 +444,8 @@ jobs:
               # Upload under the stable convention name; both darwin keys point
               # at the same artifact.
               macos_dir="${bundle}/universal-apple-darwin/release/bundle/macos"
-              mapfile -t macos_archives < <(find "$macos_dir" -maxdepth 1 -type f -name '*.app.tar.gz' ! -name '*.sig' -print)
+              shopt -s nullglob
+              macos_archives=("$macos_dir"/*.app.tar.gz)
               if [ "${#macos_archives[@]}" -ne 1 ]; then
                 echo "::error::expected exactly one macOS updater archive in $macos_dir"
                 printf '%s\n' "${macos_archives[@]}"
