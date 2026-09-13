@@ -503,7 +503,7 @@ jobs:
           # ("Not Found") into latest.json and clobbering the release asset with
           # invalid JSON, which then breaks tauri-action's updater merge on every
           # subsequent build.
-          if ! curl -fsSL https://github.com/readest/readest/releases/latest/download/latest.json -o latest.json; then
+          if ! curl -fsSL https://github.com/Moranjianghe/gratis-readest/releases/latest/download/latest.json -o latest.json; then
             echo "::error::Failed to download existing latest.json; aborting to avoid clobbering the release asset."
             exit 1
           fi
@@ -513,8 +513,8 @@ jobs:
           fi
 
           version=${{ needs.get-release.outputs.release_version }}
-          universial_apk_url="https://github.com/readest/readest/releases/download/${{ needs.get-release.outputs.release_tag }}/Readest_${version}_universal.apk"
-          arm64_apk_url="https://github.com/readest/readest/releases/download/${{ needs.get-release.outputs.release_tag }}/Readest_${version}_arm64.apk"
+          universial_apk_url="https://github.com/Moranjianghe/gratis-readest/releases/download/${{ needs.get-release.outputs.release_tag }}/Readest_${version}_universal.apk"
+          arm64_apk_url="https://github.com/Moranjianghe/gratis-readest/releases/download/${{ needs.get-release.outputs.release_tag }}/Readest_${version}_arm64.apk"
 
           universial_sig=$(cat Readest_${version}_universal.apk.sig)
           arm64_sig=$(cat Readest_${version}_arm64.apk.sig)
@@ -566,7 +566,14 @@ jobs:
         if: matrix.config.release == 'linux'
         run: |
           set -euo pipefail
-          lib=target/release/bundle/appimage/Readest.AppDir/lib
+          appimage_dir=target/release/bundle/appimage
+          mapfile -t app_dirs < <(find "$appimage_dir" -mindepth 1 -maxdepth 1 -type d -name '*.AppDir' -print)
+          if [ "${#app_dirs[@]}" -ne 1 ]; then
+            echo "::error::expected exactly one AppImage AppDir in $appimage_dir"
+            printf '%s\n' "${app_dirs[@]}"
+            exit 1
+          fi
+          lib="${app_dirs[0]}/lib"
           for so in libsoftokn3.so libfreeblpriv3.so libnssckbi.so libsqlite3.so.0 \
                     libpulse.so.0 libspeechd.so.2 libxkbcommon-x11.so.0; do
             [ -e "$lib/$so" ] || { echo "::error::$so is missing from the AppImage bundle"; exit 1; }
@@ -627,11 +634,12 @@ jobs:
             exit 1
           fi
 
-          exe_file="target/${{ matrix.config.rust_target }}/release/readest.exe"
+          exe_file=$(find "target/${{ matrix.config.rust_target }}/release" -maxdepth 1 -type f -iname '*.exe' -print -quit)
+          [ -n "$exe_file" ] || { echo "::error::portable executable is missing"; exit 1; }
           # Browsers on Windows won't download zip files that contain exe files
           # so upload the exe files instead. This is totally stupid.
           # powershell.exe -Command "Compress-Archive -Path $exe_file -DestinationPath $bin_file -Force"
-          cp $exe_file $bin_file
+          cp "$exe_file" "$bin_file"
 
           echo "Uploading $bin_file to GitHub release"
           gh release upload ${{ needs.get-release.outputs.release_tag }} $bin_file --clobber
@@ -662,7 +670,7 @@ jobs:
           # ("Not Found") into latest.json and clobbering the release asset with
           # invalid JSON, which then breaks tauri-action's updater merge on every
           # subsequent build.
-          if ! curl -fsSL https://github.com/readest/readest/releases/latest/download/latest.json -o latest.json; then
+          if ! curl -fsSL https://github.com/Moranjianghe/gratis-readest/releases/latest/download/latest.json -o latest.json; then
             echo "::error::Failed to download existing latest.json; aborting to avoid clobbering the release asset."
             exit 1
           fi
@@ -685,7 +693,7 @@ jobs:
             exit 1
           fi
 
-          portable_url="https://github.com/readest/readest/releases/download/${{ needs.get-release.outputs.release_tag }}/$bin_file"
+          portable_url="https://github.com/Moranjianghe/gratis-readest/releases/download/${{ needs.get-release.outputs.release_tag }}/$bin_file"
           portable_sig=$(cat $bin_file.sig)
 
           jq --arg url "$portable_url" \
