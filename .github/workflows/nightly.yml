@@ -77,7 +77,6 @@ jobs:
             args: '--target aarch64-pc-windows-msvc --bundles nsis'
 
     runs-on: ${{ matrix.config.os }}
-    # Backstop only — must stay ABOVE setup time + the per-step timeouts below,
     # Backstop only — must stay ABOVE setup time + the per-step timeouts below.
     timeout-minutes: 90
     steps:
@@ -277,8 +276,8 @@ jobs:
         shell: bash
         # A hung build must fail the STEP (step timeout -> job failure), not hit
         # the job-level timeout: job timeouts report `cancelled`, which the
-        # package-artifacts guard treats as run cancellation and skips collecting
-        # outputs for all platforms (#4906).
+        # a job timeout reports cancellation instead of the failed build step
+        # (#4906).
         timeout-minutes: 45
         env:
           TAURI_CEF_CARGO: '1'
@@ -377,8 +376,9 @@ jobs:
           popd
 
       # ─────────────────────── COLLECT ARTIFACTS ───────────────────────
-      # Each leg copies its updater artifacts (+ .sig) into ./nightly-out.
-      # They are uploaded below as GitHub Actions Artifacts for manual testing.
+      # Each leg copies its distributable artifacts (+ .sig) into ./nightly-out.
+      # They are uploaded below as separate artifacts so users can download
+      # only the package needed for their platform.
       - name: collect artifacts
         shell: bash
         run: |
@@ -386,7 +386,6 @@ jobs:
           version="${{ needs.compute-version.outputs.nightly_version }}"
           release="${{ matrix.config.release }}"
           arch="${{ matrix.config.arch }}"
-          rust_target="${{ matrix.config.rust_target }}"
           out="$PWD/nightly-out"
           mkdir -p "$out"
           # Cargo WORKSPACE: bundles land in the REPO-ROOT target/ dir, not
@@ -413,10 +412,8 @@ jobs:
             windows)
               if [ "$arch" = "x86_64" ]; then
                 portable_name="Readest_${version}_x64-portable.exe"
-                nsis_key="windows-x86_64"; portable_key="windows-x86_64-portable"
               else
                 portable_name="Readest_${version}_arm64-portable.exe"
-                nsis_key="windows-aarch64"; portable_key="windows-aarch64-portable"
               fi
               mapfile -t staged_installers < <(find nsis-staged -maxdepth 1 -type f -name '*-setup.exe' ! -name '*.sig' -print)
               if [ "${#staged_installers[@]}" -ne 1 ]; then
@@ -434,6 +431,30 @@ jobs:
               add_entry "$portable_name" "$portable_name"
               ;;
             linux)
+              # Collect each Linux package explicitly. The build produces all
+              # three formats because tauri.conf.json has bundle.targets=all.
+              deb_dir="${bundle}/release/bundle/deb"
+              mapfile -t debs < <(find "$deb_dir" -maxdepth 1 -type f -name '*.deb' ! -name '*.sig' -print)
+              if [ "${#debs[@]}" -ne 1 ]; then
+                echo "::error::expected exactly one Debian package in $deb_dir"
+                printf '%s\n' "${debs[@]}"
+                exit 1
+              fi
+              deb_path="${debs[0]}"
+              deb_name="$(basename "$deb_path")"
+              add_entry "$deb_path" "$deb_name"
+
+              rpm_dir="${bundle}/release/bundle/rpm"
+              mapfile -t rpms < <(find "$rpm_dir" -maxdepth 1 -type f -name '*.rpm' ! -name '*.sig' -print)
+              if [ "${#rpms[@]}" -ne 1 ]; then
+                echo "::error::expected exactly one RPM package in $rpm_dir"
+                printf '%s\n' "${rpms[@]}"
+                exit 1
+              fi
+              rpm_path="${rpms[0]}"
+              rpm_name="$(basename "$rpm_path")"
+              add_entry "$rpm_path" "$rpm_name"
+
               # CEF (sharun) AppImage: discover the actual product filename so
               # upstream and Gratis branding cannot make this step drift.
               # The Linux leg builds with `pnpm tauri build` WITHOUT `--target`
@@ -468,50 +489,68 @@ jobs:
             nightly-out/Gratis*
             !nightly-out/*.sig
 
-      - name: upload platform artifact
+      - name: upload Android universal artifact
+        if: matrix.config.release == 'android'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-${{ matrix.config.release }}-${{ matrix.config.arch || 'all' }}
-          path: nightly-out/*
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-android-universal
+          path: nightly-out/*_universal.apk*
           if-no-files-found: error
           retention-days: 14
 
-  package-artifacts:
-    needs: [compute-version, build]
-    if: ${{ always() && needs.build.result != 'cancelled' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: download platform artifacts
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          pattern: nightly-*
-          path: nightly
-          merge-multiple: true
-
-      - name: create artifact manifest
-        shell: bash
-        run: |
-          set -euo pipefail
-          version="${{ needs.compute-version.outputs.nightly_version }}"
-          if ! compgen -G 'nightly/Readest*' > /dev/null \
-            && ! compgen -G 'nightly/Gratis*' > /dev/null; then
-            echo "::error::no build outputs found"
-            exit 1
-          fi
-          find nightly -maxdepth 1 -type f -printf '%f\n' | sort > nightly/FILES.txt
-          {
-            echo "Nightly version: ${version}"
-            echo
-            echo "Files:"
-            sed 's/^/- /' nightly/FILES.txt
-          } > nightly/README.txt
-
-      - name: upload combined artifact
+      - name: upload Android arm64 artifact
+        if: matrix.config.release == 'android'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-all
-          path: nightly
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-android-arm64
+          path: nightly-out/*_arm64.apk*
           if-no-files-found: error
           retention-days: 14
+
+      - name: upload Linux AppImage artifact
+        if: matrix.config.release == 'linux'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-linux-${{ matrix.config.arch }}-appimage
+          path: nightly-out/*.AppImage*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: upload Linux Debian artifact
+        if: matrix.config.release == 'linux'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-linux-${{ matrix.config.arch }}-deb
+          path: nightly-out/*.deb*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: upload Linux RPM artifact
+        if: matrix.config.release == 'linux'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-linux-${{ matrix.config.arch }}-rpm
+          path: nightly-out/*.rpm*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: upload Windows installer artifact
+        if: matrix.config.release == 'windows'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-windows-${{ matrix.config.arch }}-installer
+          path: nightly-out/*-setup.exe*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: upload Windows portable artifact
+        if: matrix.config.release == 'windows'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nightly-${{ needs.compute-version.outputs.nightly_version }}-windows-${{ matrix.config.arch }}-portable
+          path: nightly-out/*-portable.exe*
+          if-no-files-found: error
+          retention-days: 14
+
+  # GitHub wraps each artifact in a small ZIP for transport, but no longer
+  # creates one large archive containing every platform and package.
