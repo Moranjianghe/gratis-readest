@@ -287,6 +287,8 @@ jobs:
           TAURI_CEF_CARGO: '1'
           # See release.yml.
           STRACE_MODE: '0'
+          # linuxdeploy's strip step fails on modern ELF relocation sections.
+          NO_STRIP: ${{ matrix.config.release == 'linux' && 'true' || '' }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           NODE_OPTIONS: '--max-old-space-size=8192'
@@ -294,7 +296,7 @@ jobs:
           version="${{ needs.compute-version.outputs.nightly_version }}"
           node -e "const f='apps/readest-app/package.json';const j=require('./'+f);j.version='${version}';require('fs').writeFileSync(f, JSON.stringify(j,null,2)+'\n')"
           cd apps/readest-app
-          pnpm tauri build ${{ matrix.config.args }}
+          pnpm tauri build ${{ matrix.config.args }} ${{ matrix.config.release == 'linux' && '--verbose' || '' }}
 
       # quick-sharun skips what it cannot find without failing; catch that
       # before it ships.
