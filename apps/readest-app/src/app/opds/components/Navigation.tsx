@@ -114,7 +114,12 @@ export function Navigation({
         appService?.isMobile ? '' : 'bg-base-100',
       )}
     >
-      <div className={clsx('justify-start gap-1 sm:gap-3', isTrafficLightVisible && 'pl-16!')}>
+      <div
+        className={clsx(
+          'flex items-center justify-start gap-1 sm:gap-3',
+          isTrafficLightVisible && 'pl-16!',
+        )}
+      >
         <div className='flex gap-1'>
           {onBack && (
             <button
@@ -156,7 +161,7 @@ export function Navigation({
             onChange={handleSearchChange}
             spellCheck='false'
             className={clsx(
-              'input rounded-selector h-9 w-full pl-10 pr-4 sm:h-7',
+              'window-drag-input input rounded-selector h-9 w-full pl-10 pr-4 sm:h-7',
               viewSettings?.isEink
                 ? 'border-1 border-base-content focus:border-base-content'
                 : 'bg-base-300/45 border-none',
