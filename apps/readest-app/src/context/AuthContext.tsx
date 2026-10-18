@@ -17,6 +17,7 @@ import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 interface AuthContextType {
   token: string | null;
   user: User | null;
+  authReady: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
   refresh: () => void;
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   });
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     const syncSession = (
@@ -62,9 +64,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
     const refreshSession = async () => {
       try {
-        await supabase.auth.refreshSession();
+        const { data, error } = await supabase.auth.refreshSession();
+        if (!error) syncSession(data.session);
       } catch {
         syncSession(null);
+      } finally {
+        setAuthReady(true);
       }
     };
 
@@ -97,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await supabase.auth.refreshSession();
     } catch {
     } finally {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: 'local' });
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       setToken(null);
@@ -112,8 +117,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = useMemo(
-    () => ({ token, user, login, logout, refresh }),
-    [token, user, login, logout, refresh],
+    () => ({ token, user, authReady, login, logout, refresh }),
+    [token, user, authReady, login, logout, refresh],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
