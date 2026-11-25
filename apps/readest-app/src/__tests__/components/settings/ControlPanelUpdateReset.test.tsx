@@ -1,9 +1,11 @@
+// @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type { SystemSettings } from '@/types/settings';
 import type { FileSystem } from '@/types/system';
 import { DEFAULT_SYSTEM_SETTINGS } from '@/services/constants';
 import { getDefaultViewSettings } from '@/services/settingsService';
+import { APP_NIGHTLY_UPDATES_ENABLED } from '@/config/appConfig';
 import { useSettingsStore } from '@/store/settingsStore';
 import ControlPanel from '@/components/settings/ControlPanel';
 
@@ -93,12 +95,18 @@ describe('Behavior update settings reset', () => {
     const registerReset = vi.fn<(reset: () => void) => void>();
     const panel = render(<ControlPanel bookKey='' onRegisterReset={registerReset} />);
     expect(autoCheckSwitch().checked).toBe(false);
-    expect(nightlySwitch().checked).toBe(true);
+    expect(
+      screen.queryByRole<HTMLInputElement>('checkbox', { name: /^Nightly Builds/ })?.checked ??
+        null,
+    ).toBe(APP_NIGHTLY_UPDATES_ENABLED ? true : null);
 
     await act(async () => registerReset.mock.calls[0]![0]());
 
     expect.soft(autoCheckSwitch().checked).toBe(true);
-    expect.soft(nightlySwitch().checked).toBe(false);
+    expect(
+      screen.queryByRole<HTMLInputElement>('checkbox', { name: /^Nightly Builds/ })?.checked ??
+        null,
+    ).toBe(APP_NIGHTLY_UPDATES_ENABLED ? false : null);
     expect.soft(savedSettings()).toMatchObject({
       autoCheckUpdates: true,
       updateChannel: 'stable',
@@ -110,7 +118,10 @@ describe('Behavior update settings reset', () => {
     useSettingsStore.setState({ settings: savedSettings() });
     render(<ControlPanel bookKey='' onRegisterReset={() => {}} />);
     expect(autoCheckSwitch().checked).toBe(true);
-    expect(nightlySwitch().checked).toBe(false);
+    expect(
+      screen.queryByRole<HTMLInputElement>('checkbox', { name: /^Nightly Builds/ })?.checked ??
+        null,
+    ).toBe(APP_NIGHTLY_UPDATES_ENABLED ? false : null);
   });
 
   it('resets preferences changed after the reset callback was registered', async () => {
@@ -124,16 +135,22 @@ describe('Behavior update settings reset', () => {
 
     await act(async () => {
       fireEvent.click(autoCheckSwitch());
-      fireEvent.click(nightlySwitch());
+      if (APP_NIGHTLY_UPDATES_ENABLED) fireEvent.click(nightlySwitch());
     });
     expect(autoCheckSwitch().checked).toBe(false);
-    expect(nightlySwitch().checked).toBe(true);
+    expect(
+      screen.queryByRole<HTMLInputElement>('checkbox', { name: /^Nightly Builds/ })?.checked ??
+        null,
+    ).toBe(APP_NIGHTLY_UPDATES_ENABLED ? true : null);
 
     await act(async () => registerReset.mock.calls[0]![0]());
     await act(async () => registerReset.mock.calls[0]![0]());
 
     expect(autoCheckSwitch().checked).toBe(true);
-    expect(nightlySwitch().checked).toBe(false);
+    expect(
+      screen.queryByRole<HTMLInputElement>('checkbox', { name: /^Nightly Builds/ })?.checked ??
+        null,
+    ).toBe(APP_NIGHTLY_UPDATES_ENABLED ? false : null);
     expect(savedSettings()).toMatchObject({ autoCheckUpdates: true, updateChannel: 'stable' });
   });
 

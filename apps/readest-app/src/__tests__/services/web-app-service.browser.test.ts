@@ -54,7 +54,7 @@ describe('WebAppService', () => {
 
   it('should resolve empty Data path to prefix', async () => {
     const resolved = await service.resolveFilePath('', 'Data');
-    expect(resolved).toBe('Readest');
+    expect(resolved).toBe('GratisReadest');
   });
 
   it('should set localBooksDir after init', () => {

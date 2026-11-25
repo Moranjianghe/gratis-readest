@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { expect, test } from '../fixtures/base';
 import { SAMPLE_TXT } from '../fixtures/books';
 import { LibraryPage } from '../pages/LibraryPage';
+import { APP_DATA_SUBDIR } from '../../src/config/appConfig';
 
 for (const partiallyRecovered of [false, true]) {
   test(`keeps readable books visible when recovery cannot save (earlier move completed: ${partiallyRecovered})`, async ({
@@ -12,21 +13,23 @@ for (const partiallyRecovered of [false, true]) {
     await library.importBook(SAMPLE_TXT);
     await expect(library.bookCards()).toHaveCount(1);
 
+    const libraryPath = `${APP_DATA_SUBDIR}/Books/library.json`;
     const readBooks = () =>
       page.evaluate(
-        () =>
+        (path) =>
           new Promise<{ hash: string; groupName?: string }[]>((resolve, reject) => {
             const open = indexedDB.open('AppFileSystem');
             open.onerror = () => reject(open.error);
             open.onsuccess = () => {
               const db = open.result;
               const transaction = db.transaction('files');
-              const read = transaction.objectStore('files').get('Readest/Books/library.json');
+              const read = transaction.objectStore('files').get(path);
               read.onsuccess = () => resolve(JSON.parse(read.result?.content || '[]'));
               read.onerror = () => reject(read.error);
               transaction.oncomplete = () => db.close();
             };
           }),
+        libraryPath,
       );
     await expect.poll(async () => (await readBooks()).length).toBe(1);
     const book = (await readBooks())[0]!;
@@ -77,21 +80,20 @@ for (const partiallyRecovered of [false, true]) {
       },
     );
     await page.addInitScript(
-      ({ permittedWrites }) => {
+      ({ permittedWrites, libraryPath }) => {
         const put = IDBObjectStore.prototype.put;
         let writes = 0;
         IDBObjectStore.prototype.put = function (value, ...args) {
           if (
             localStorage.getItem('readest.e2e.deny-library-write') === 'true' &&
-            (value?.path === 'Readest/Books/library.json' ||
-              value?.path === 'Readest/Books/library.json.bak') &&
+            (value?.path === libraryPath || value?.path === `${libraryPath}.bak`) &&
             writes++ >= permittedWrites
           )
             throw new Error('EACCES: library is readable but not writable');
           return put.call(this, value, ...args);
         };
       },
-      { permittedWrites: partiallyRecovered ? 2 : 0 },
+      { permittedWrites: partiallyRecovered ? 2 : 0, libraryPath },
     );
 
     await page.reload();
