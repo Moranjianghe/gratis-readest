@@ -62,6 +62,10 @@ def requires_review(path):
     filename = path.rsplit("/", 1)[-1]
     return (
         path.startswith(SENSITIVE_PREFIXES)
+        or (
+            path.startswith("apps/readest-app/src-tauri/plugins/")
+            and "/permissions/" in path
+        )
         or path in SENSITIVE_EXACT
         or path.endswith(SENSITIVE_SUFFIXES)
         or filename in {

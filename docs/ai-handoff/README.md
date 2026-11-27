@@ -5,11 +5,8 @@ to continue work on the Gratis Readest fork.
 
 ## Repository
 
-- Repository: `/home/moran/code/gratis-readest`
-- Active branch: `feature/gratis-foundation`
-- Upstream branch currently points to `origin/main`.
-- Do not discard existing uncommitted changes. They are the current Gratis
-  foundation work.
+Work from the Gratis Readest repository checkout. The fork's integration branch
+tracks `origin/main`; preserve any pre-existing worktree changes before editing.
 
 ## Product Direction
 
@@ -17,7 +14,7 @@ Gratis Readest is intended to be a local-first fork of Readest:
 
 - Brand: `Gratis Readest`
 - Binary: `gratis-readest`
-- Project URL: `https://github.com/Moranjianghe/gratis-readest`
+- Project URL: see `APP_PROJECT_URL` in `apps/readest-app/src/config/appConfig.ts`.
 - Original Supabase login/authentication remains available for users who need
   Readest account features.
 - PostHog telemetry is disabled for this distribution.
@@ -111,46 +108,20 @@ migrated. This is intentional for now: it avoids touching an upstream Readest
 installation. A future migration/import command should be explicit and
 user-controlled.
 
-## Current Validation
+## Validation
 
-Use Node `22.23.1` before running project commands:
-
-```bash
-source /home/moran/.nvm/nvm.sh
-nvm use 22.23.1
-```
+Use Node 24, matching the repository's CI workflows, when running project
+commands. Select it with whichever Node version manager is available; do not
+hardcode a machine-specific initialization path.
 
 The project uses pnpm through the existing `packageManager` field in the root
 `package.json`; do not add pnpm as an application dependency or introduce a
 second lockfile.
 
-Commands used successfully:
-
-```bash
-pnpm --filter @readest/readest-app lint
-pnpm --filter @readest/readest-app build-web
-pnpm --filter @readest/readest-app test --run
-```
-
-Latest full test result:
-
-```text
-587 passed / 4 failed / 3 skipped
-```
-
-The four failures are pre-existing document-loader baseline failures:
-
-- 3 TXT-to-EPUB tests in `src/__tests__/libs/document.test.ts`
-- 1 nested CBZ ComicInfo metadata test in
-  `src/__tests__/document/series-metadata.test.ts`
-
-They are unrelated to the Gratis branding, auth, telemetry, or storage
-namespace changes. Do not hide or weaken these tests; fix them separately.
-
-Focused path/storage tests and related tests pass. Lint covers 1782 files, and
-the web production build completes successfully. The build still prints
-existing Next/Serwist warnings about Turbopack, Cache-Control headers, and the
-deprecated middleware convention.
+For code changes, run the applicable commands from
+`apps/readest-app/CLAUDE.md` and `.claude/rules/verification.md`. Test results
+are specific to a commit: record the exact revision, commands, and outcomes for
+the code under review rather than reusing an earlier result.
 
 ## Development Server
 
@@ -164,30 +135,21 @@ Expected URL:
 
 `http://localhost:3000`
 
-If it is not running, start it again using Node 22.
+If it is not running, start it again using Node 24.
 
 ## Next Recommended Work
 
-1. Commit the current foundation as a small, reviewable commit before adding
-   more distribution-specific changes.
-2. Decide whether Gratis should support WebDAV/S3/Drive in the first release.
-   If yes, add explicit Gratis UI copy and verify that its remote namespace
-   should remain compatible with upstream or be separately namespaced.
-3. Implement an explicit user-controlled import/migration tool from the old
-   local `Readest/` directory if preserving pre-fork Gratis data is required.
-4. Plan a separate platform identity migration before changing
+1. Keep the upstream-sync classifier and its tests aligned with sensitive paths,
+   including every Tauri plugin permission directory.
+2. If a local-data migration is needed, make it explicit and user-controlled.
+3. Plan platform identity isolation as a separate migration before changing
    `com.bilingify.readest`; update Android/iOS generated projects, keychain,
    app groups, deep links, updater, and existing-user migration together.
-5. Investigate the four document-loader baseline failures independently.
-6. Before merging upstream, preserve the central policy boundary in
+4. Before merging upstream, preserve the central policy boundary in
    `appConfig.ts` and avoid invasive edits to upstream sync internals.
 
 ## Safety Notes
 
-- Never run `git reset --hard` or discard the worktree without explicit
-  approval.
-- Inspect `git status` before editing because the foundation is intentionally
-  uncommitted.
+- Preserve any pre-existing worktree changes before editing.
 - Do not commit `.env*`, credentials, tokens, or generated local lockfiles.
-- Prefer `pnpm` and keep Node 22.13+ available; the current working version is
-  Node 22.23.1.
+- Use Node 24, matching the repository CI configuration.
