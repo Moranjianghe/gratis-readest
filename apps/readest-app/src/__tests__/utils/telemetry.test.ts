@@ -56,20 +56,20 @@ describe('optInTelemetry / optOutTelemetry', () => {
     vi.clearAllMocks();
   });
 
-  it('opt-in records opt-in decision, clears opt-out flag, and calls posthog', () => {
+  it('keeps telemetry opted out when opt-in is unavailable in Gratis Readest', () => {
     optInTelemetry();
-    expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('false');
-    expect(getTelemetryDecision()).toBe('opt-in');
-    expect(hasOptedOutTelemetry()).toBe(false);
-    expect(posthog.opt_in_capturing).toHaveBeenCalledOnce();
+    expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('true');
+    expect(getTelemetryDecision()).toBe('opt-out');
+    expect(hasOptedOutTelemetry()).toBe(true);
+    expect(posthog.opt_in_capturing).not.toHaveBeenCalled();
   });
 
-  it('opt-out records opt-out decision, sets opt-out flag, and calls posthog', () => {
+  it('opt-out records opt-out decision without contacting PostHog', () => {
     optOutTelemetry();
     expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('true');
     expect(getTelemetryDecision()).toBe('opt-out');
     expect(hasOptedOutTelemetry()).toBe(true);
-    expect(posthog.opt_out_capturing).toHaveBeenCalledOnce();
+    expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
   });
 });
 
@@ -101,13 +101,13 @@ describe('reconcileTelemetryConsent', () => {
     vi.clearAllMocks();
   });
 
-  it('opts out when the saved settings have telemetry disabled', () => {
+  it('stays opted out when saved settings disable telemetry', () => {
     optInTelemetry();
     vi.clearAllMocks();
 
     expect(reconcileTelemetryConsent(false)).toBe(false);
 
-    expect(posthog.opt_out_capturing).toHaveBeenCalledOnce();
+    expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
     expect(hasOptedOutTelemetry()).toBe(true);
     expect(getTelemetryDecision()).toBe('opt-out');
   });
@@ -135,10 +135,12 @@ describe('reconcileTelemetryConsent', () => {
     expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
   });
 
-  it('reports telemetry as enabled when the consent is opt-in', () => {
+  it('reports telemetry as disabled when opt-in is requested', () => {
     optInTelemetry();
 
-    expect(reconcileTelemetryConsent(true)).toBe(true);
+    expect(reconcileTelemetryConsent(true)).toBe(false);
+    expect(hasOptedOutTelemetry()).toBe(true);
+    expect(getTelemetryDecision()).toBe('opt-out');
   });
 });
 
@@ -148,22 +150,24 @@ describe('applyPostHogConsent', () => {
     vi.clearAllMocks();
   });
 
-  it('restores an opt-in without sending an $opt_in event', () => {
+  it('does not contact PostHog when restoring an opt-in decision', () => {
     setTelemetryDecision('opt-in');
 
     applyPostHogConsent();
 
-    expect(posthog.opt_in_capturing).toHaveBeenCalledWith({ captureEventName: false });
+    expect(posthog.opt_in_capturing).not.toHaveBeenCalled();
     expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
+    expect(getTelemetryDecision()).toBe('opt-out');
   });
 
-  it('opts out for any other decision', () => {
+  it('does not contact PostHog for any other decision', () => {
     setTelemetryDecision('pending');
 
     applyPostHogConsent();
 
-    expect(posthog.opt_out_capturing).toHaveBeenCalledOnce();
+    expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
     expect(posthog.opt_in_capturing).not.toHaveBeenCalled();
+    expect(getTelemetryDecision()).toBe('opt-out');
   });
 });
 
@@ -178,11 +182,12 @@ describe('consent calls before PostHog starts', () => {
     posthog.__loaded = true;
   });
 
-  it('records the decision but leaves PostHog alone until init', () => {
+  it('keeps telemetry opted out before PostHog starts', () => {
     optOutTelemetry();
     optInTelemetry();
 
-    expect(getTelemetryDecision()).toBe('opt-in');
+    expect(getTelemetryDecision()).toBe('opt-out');
+    expect(localStorage.getItem(TELEMETRY_OPT_OUT_KEY)).toBe('true');
     expect(posthog.opt_in_capturing).not.toHaveBeenCalled();
     expect(posthog.opt_out_capturing).not.toHaveBeenCalled();
   });

@@ -39,6 +39,7 @@ import { version as osVersion } from '@tauri-apps/plugin-os';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { isPWA, isTauriAppPlatform, isWebAppPlatform } from '@/services/environment';
+import { APP_NAME } from '@/config/appConfig';
 import {
   navigateToReader,
   navigateToLogin,
@@ -450,7 +451,7 @@ describe('showReaderWindow', async () => {
     const options = constructorCall[1]!;
     // The overlay title bar hides its title text natively, so the window is
     // named like every other platform's.
-    expect(options.title).toBe('Readest');
+    expect(options.title).toBe(APP_NAME);
     expect(options.decorations).toBe(true);
     expect(options.titleBarStyle).toBe('overlay');
   });
@@ -461,7 +462,7 @@ describe('showReaderWindow', async () => {
 
     const constructorCall = vi.mocked(WebviewWindow).mock.calls[0]!;
     const options = constructorCall[1]!;
-    expect(options.title).toBe('Readest');
+    expect(options.title).toBe('Gratis Readest');
     expect(options.decorations).toBe(false);
     expect(options.transparent).toBe(true);
     expect(options.shadow).toBe(true);

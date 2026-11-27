@@ -1,4 +1,5 @@
 import posthog from 'posthog-js';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 export const TELEMETRY_OPT_OUT_KEY = 'readest-telemetry-opt-out';
 export const TELEMETRY_DECISION_KEY = 'readest-telemetry-decision';
@@ -9,6 +10,7 @@ export type TelemetryDecision = 'opt-in' | 'opt-out' | 'pending';
 export const TELEMETRY_PROMPT_BUCKET_RATE = 0.1;
 
 export const hasOptedOutTelemetry = () => {
+  if (!APP_TELEMETRY_ENABLED) return true;
   return localStorage.getItem(TELEMETRY_OPT_OUT_KEY) === 'true';
 };
 
@@ -29,6 +31,7 @@ export const rollIntoTelemetryPromptBucket = (rng: () => number = Math.random) =
 };
 
 export const captureEvent = (event: string, properties?: Record<string, unknown>) => {
+  if (!APP_TELEMETRY_ENABLED) return;
   if (!hasOptedOutTelemetry()) {
     posthog.capture(event, properties);
   }
@@ -38,6 +41,11 @@ export const captureEvent = (event: string, properties?: Record<string, unknown>
 // hands it to the SDK once init has set the project token. A consent call
 // before init would be stored under a token-less key that nothing reads.
 export const optInTelemetry = () => {
+  if (!APP_TELEMETRY_ENABLED) {
+    localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'true');
+    setTelemetryDecision('opt-out');
+    return;
+  }
   localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'false');
   setTelemetryDecision('opt-in');
   if (posthog.__loaded) posthog.opt_in_capturing();
@@ -45,7 +53,7 @@ export const optInTelemetry = () => {
 export const optOutTelemetry = () => {
   localStorage.setItem(TELEMETRY_OPT_OUT_KEY, 'true');
   setTelemetryDecision('opt-out');
-  if (posthog.__loaded) posthog.opt_out_capturing();
+  if (APP_TELEMETRY_ENABLED && posthog.__loaded) posthog.opt_out_capturing();
 };
 
 /**
@@ -53,6 +61,10 @@ export const optOutTelemetry = () => {
  * boot, so an opt-in is restored without the SDK's default `$opt_in` event.
  */
 export const applyPostHogConsent = () => {
+  if (!APP_TELEMETRY_ENABLED) {
+    optOutTelemetry();
+    return;
+  }
   if (getTelemetryDecision() === 'opt-in') {
     posthog.opt_in_capturing({ captureEventName: false });
   } else {
@@ -72,6 +84,10 @@ export const applyPostHogConsent = () => {
  * the settings file off and the settings panel shows what is in effect.
  */
 export const reconcileTelemetryConsent = (telemetryEnabled: boolean) => {
+  if (!APP_TELEMETRY_ENABLED) {
+    optOutTelemetry();
+    return false;
+  }
   if (!telemetryEnabled && !hasOptedOutTelemetry()) {
     optOutTelemetry();
   }

@@ -106,6 +106,9 @@ jobs:
           # +=: tauri.conf.json already ships the AppRun hook entry.
           conf=apps/readest-app/src-tauri/tauri.conf.json
           jq --arg d "$lib_dir" '.bundle.linux.appimage.files += {
+              "/usr/lib/libsoftokn3.so": ($d + "/libsoftokn3.so"),
+              "/usr/lib/libfreeblpriv3.so": ($d + "/libfreeblpriv3.so"),
+              "/usr/lib/libnssckbi.so": ($d + "/libnssckbi.so"),
               "/usr/lib/libspeechd.so.2": ($d + "/libspeechd.so.2"),
               "/usr/lib/libxkbcommon-x11.so.0": ($d + "/libxkbcommon-x11.so.0")
             }' "$conf" > "$conf.tmp" && mv "$conf.tmp" "$conf"
@@ -142,7 +145,14 @@ jobs:
       - name: verify the AppImage bundle contents (linux only)
         run: |
           set -euo pipefail
-          lib=target/release/bundle/appimage/Readest.AppDir/lib
+          appimage_dir=target/release/bundle/appimage
+          mapfile -t app_dirs < <(find "$appimage_dir" -mindepth 1 -maxdepth 1 -type d -name '*.AppDir' -print)
+          if [ "${#app_dirs[@]}" -ne 1 ]; then
+            echo "::error::expected exactly one AppImage AppDir in $appimage_dir"
+            printf '%s\n' "${app_dirs[@]}"
+            exit 1
+          fi
+          lib="${app_dirs[0]}/lib"
           for so in libsoftokn3.so libfreeblpriv3.so libnssckbi.so libsqlite3.so.0 \
                     libpulse.so.0 libspeechd.so.2 libxkbcommon-x11.so.0; do
             [ -e "$lib/$so" ] || { echo "::error::$so is missing from the AppImage bundle"; exit 1; }

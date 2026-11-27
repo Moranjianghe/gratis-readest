@@ -13,10 +13,12 @@ import {
 import { isAuthRetryableFetchError, User } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabase';
 import posthog from 'posthog-js';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 interface AuthContextType {
   token: string | null;
   user: User | null;
+  authReady: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
   refresh: () => Promise<boolean>;
@@ -38,7 +40,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     return null;
   });
-  // logout() refreshes before signing out, which reports the session again.
+  const [authReady, setAuthReady] = useState(false);
   const signingOut = useRef(false);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
         localStorage.setItem('user', JSON.stringify(user));
-        posthog.identify(user.id);
+        if (APP_TELEMETRY_ENABLED) posthog.identify(user.id);
         setToken(access_token);
         setUser(user);
       } else {
@@ -78,12 +80,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (error && !isAuthRetryableFetchError(error)) syncSession(null);
       } catch {
         // Not a rejection of the token either; keep the session.
+      } finally {
+        setAuthReady(true);
       }
     };
 
     const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
       if (session || event !== 'INITIAL_SESSION') {
         syncSession(session);
+        if (event === 'INITIAL_SESSION') setAuthReady(true);
         return;
       }
       // A null INITIAL_SESSION doesn't mean signed out. When the startup
@@ -98,6 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         void restoreSession(refreshToken);
       } else {
         syncSession(null);
+        setAuthReady(true);
       }
     });
 
@@ -149,8 +155,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = useMemo(
-    () => ({ token, user, login, logout, refresh }),
-    [token, user, login, logout, refresh],
+    () => ({ token, user, authReady, login, logout, refresh }),
+    [token, user, authReady, login, logout, refresh],
   );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

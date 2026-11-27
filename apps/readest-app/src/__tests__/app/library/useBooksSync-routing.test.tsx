@@ -46,6 +46,8 @@ const routing = vi.hoisted(() => ({
   backends: [] as ('webdav' | 'gdrive' | 's3' | 'onedrive')[],
 }));
 
+const authState = vi.hoisted(() => ({ user: { id: 'user-1' } as { id: string } | null }));
+
 const runFileLibrarySyncPass = vi.hoisted(() =>
   vi.fn(
     async (): Promise<{ booksSynced: number; indexPushFailed?: boolean } | null> => ({
@@ -55,7 +57,7 @@ const runFileLibrarySyncPass = vi.hoisted(() =>
 );
 
 vi.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: { id: 'user-1' } }),
+  useAuth: () => authState,
 }));
 
 vi.mock('@/context/EnvContext', () => ({
@@ -102,6 +104,7 @@ beforeEach(() => {
   syncState.lastSyncedAtBooks = 0;
   routing.readestEnabled = true;
   routing.backends = [];
+  authState.user = { id: 'user-1' };
   useLibraryStore.setState({ library: [], libraryLoaded: true, isSyncing: false });
 });
 
@@ -204,6 +207,20 @@ describe('useBooksSync pullLibrary routing (issue #5062)', () => {
     await act(async () => {
       await Promise.resolve();
     });
+    expect(syncState.syncBooks).not.toHaveBeenCalled();
+  });
+
+  it('runs the file pass while logged out', async () => {
+    authState.user = null;
+    routing.readestEnabled = false;
+    routing.backends = ['webdav'];
+
+    const { result } = renderHook(() => useBooksSync());
+
+    await act(async () => {
+      await result.current.pullLibrary(false, true);
+    });
+    expect(runFileLibrarySyncPass).toHaveBeenCalled();
     expect(syncState.syncBooks).not.toHaveBeenCalled();
   });
 

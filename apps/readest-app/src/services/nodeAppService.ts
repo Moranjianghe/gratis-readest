@@ -8,6 +8,7 @@ import { FileSystem, BaseDir, OsPlatform, ResolvedPath, FileItem, FileInfo } fro
 import { DatabaseOpts, DatabaseService } from '@/types/database';
 import { SchemaType } from '@/services/database/migrate';
 import { BaseAppService } from './appService';
+import { APP_NAME } from '@/config/appConfig';
 import {
   DATA_SUBDIR,
   LOCAL_BOOKS_SUBDIR,
@@ -15,8 +16,6 @@ import {
   LOCAL_FONTS_SUBDIR,
   LOCAL_IMAGES_SUBDIR,
 } from './constants';
-
-const APP_NAME = 'Readest';
 
 // System directory getters matching Tauri's appDataDir, appConfigDir, etc.
 function getAppDataDir(): string {

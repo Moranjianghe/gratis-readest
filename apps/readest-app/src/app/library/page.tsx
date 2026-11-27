@@ -218,7 +218,7 @@ const LibraryPageWithSearchParams = () => {
 const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchParams | null }) => {
   const router = useAppRouter();
   const { envConfig, appService } = useEnv();
-  const { token, user } = useAuth();
+  const { token, user, authReady } = useAuth();
   const {
     library: libraryBooks,
     libraryLoaded: libraryLoadedFromDisk,
@@ -750,12 +750,14 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
   }, [pendingNavigationBookIds, appService, router, libraryBooks]);
 
   useEffect(() => {
-    if (isInitiating.current) return;
-    isInitiating.current = true;
+    if (!authReady) return;
+    let isCurrent = true;
 
     const initLogin = async () => {
       const appService = await envConfig.getAppService();
       const settings = await appService.loadSettings();
+      if (!isCurrent) return;
+
       if (token && user) {
         if (!settings.keepLogin) {
           settings.keepLogin = true;
@@ -766,6 +768,18 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
         router.push('/auth');
       }
     };
+
+    initLogin().catch((error) => {
+      if (isCurrent) console.error('Failed to initialize login:', error);
+    });
+    return () => {
+      isCurrent = false;
+    };
+  }, [authReady, token, user, envConfig, router, setSettings, saveSettings]);
+
+  useEffect(() => {
+    if (isInitiating.current) return;
+    isInitiating.current = true;
 
     // Reuse the in-store library only when it was actually loaded from disk.
     // Gating on `length > 0` was unsafe: a transient "Open with" entry made the
@@ -872,7 +886,6 @@ const LibraryPageContent = ({ searchParams }: { searchParams: ReadonlyURLSearchP
       });
     };
 
-    initLogin().catch((error) => console.error('Failed to initialize login:', error));
     initLibrary().catch(recoverFromInitFailure);
     return () => {
       setCheckOpenWithBooks(false);

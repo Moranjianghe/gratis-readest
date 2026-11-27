@@ -1,3 +1,21 @@
+// Node 22 exposes File globally while jsdom supplies a different Blob
+// implementation. Passing a Blob from one realm to File from another
+// serializes it as "[object Blob]", which corrupts in-memory EPUBs in
+// conversion tests. Keep both binary primitives in jsdom's realm so they
+// remain mutually compatible and pdfjs sees the expected File implementation.
+if (typeof window !== 'undefined') {
+  Object.assign(globalThis, { Blob: window.Blob, File: window.File });
+
+  // zip.js uses Node's Response.blob() under Vitest, which returns a Node Blob
+  // even though the tests use jsdom's File. Normalize that boundary so a
+  // cross-realm Blob is not stringified as "[object Blob]" by File/Blob.
+  const responseBlob = Response.prototype.blob;
+  Response.prototype.blob = async function (this: Response) {
+    const blob = await responseBlob.call(this);
+    return new window.Blob([await blob.arrayBuffer()], { type: blob.type });
+  };
+}
+
 // jsdom does not implement the CSS namespace; foliate-js TTS uses CSS.escape
 // (mark[name="…"] lookups). Provide the standard polyfill so those paths work.
 const globalWithCSS = globalThis as { CSS?: { escape?: (value: string) => string } };

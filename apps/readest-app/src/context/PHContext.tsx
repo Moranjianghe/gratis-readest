@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { PostHogProvider } from 'posthog-js/react';
 import { applyPostHogConsent, getTelemetryDecision } from '@/utils/telemetry';
 import { getAppVersion } from '@/utils/version';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 const posthogUrl =
   process.env['NEXT_PUBLIC_POSTHOG_HOST'] ||
@@ -24,6 +25,7 @@ let initialized = false;
 export const initPostHog = () => {
   if (
     initialized ||
+    !APP_TELEMETRY_ENABLED ||
     typeof window === 'undefined' ||
     process.env['NODE_ENV'] !== 'production' ||
     !posthogKey

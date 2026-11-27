@@ -6,6 +6,7 @@ import { useEnv } from '@/context/EnvContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { parseWebViewInfo } from '@/utils/ua';
 import { handleGlobalError } from '@/utils/error';
+import { APP_TELEMETRY_ENABLED } from '@/config/appConfig';
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -22,7 +23,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
   }, [appService]);
 
   useEffect(() => {
-    posthog.captureException(error);
+    if (APP_TELEMETRY_ENABLED) posthog.captureException(error);
     handleGlobalError(error);
   }, [appService, error]);
 

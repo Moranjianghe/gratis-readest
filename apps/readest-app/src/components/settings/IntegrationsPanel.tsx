@@ -86,6 +86,7 @@ import DataFlowPage from './integrations/DataFlowPage';
 import { useFlowConnectors, useFlowState } from './integrations/useFlowConnectors';
 import SubPageHeader from './SubPageHeader';
 import { BoxedList, NavigationRow, SectionTitle, SettingLabel, Tips } from './primitives';
+import { APP_READEST_CLOUD_ENABLED } from '@/config/appConfig';
 
 type SubPage =
   | 'kosync'
@@ -569,7 +570,7 @@ const IntegrationsPanel: React.FC = () => {
   // token) can be switched on inline; an unconfigured one must be opened to
   // connect.
   const providers = getCloudSyncProviders(settings);
-  const readestEnabled = isReadestCloudEnabled(settings);
+  const readestEnabled = APP_READEST_CLOUD_ENABLED && isReadestCloudEnabled(settings);
   const cloudGate = resolveCloudSyncGate(settings, userProfilePlan ?? 'free');
   const enabledBackends = cloudGate.backends;
 
@@ -778,19 +779,20 @@ const IntegrationsPanel: React.FC = () => {
             role='group'
             aria-label={_('Cloud sync providers')}
           >
-            <CloudProviderRow
-              icon={RiCloudFill}
-              title={_('Readest Cloud')}
-              status={readestStatus}
-              checked={!!user && readestEnabled}
-              canToggle={!!user}
-              onToggle={(next) => toggleCloudProvider('readest', next)}
-              onOpen={() => (user ? setSubPage('readest-cloud') : navigateToLogin(router))}
-              toggleLabel={_('Sync with Readest Cloud')}
-            />
-            {/* Third-party providers are premium: every row carries the tier
-                badge; on a free plan the checkbox is disabled and opening a
-                row routes to the upgrade page instead of the config sub-page. */}
+            {APP_READEST_CLOUD_ENABLED && (
+              <CloudProviderRow
+                icon={RiCloudFill}
+                title={_('Readest Cloud')}
+                status={readestStatus}
+                checked={!!user && readestEnabled}
+                canToggle={!!user}
+                onToggle={(next) => toggleCloudProvider('readest', next)}
+                onOpen={() => (user ? setSubPage('readest-cloud') : navigateToLogin(router))}
+                toggleLabel={_('Sync with Readest Cloud')}
+              />
+            )}
+            {/* Third-party providers use their own credentials and are gated
+                only when APP_CLOUD_SYNC_REQUIRES_PREMIUM is enabled. */}
             {(appService?.isDesktopApp ||
               appService?.isAndroidApp ||
               appService?.isIOSApp ||

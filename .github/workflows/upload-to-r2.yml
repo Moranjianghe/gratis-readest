@@ -39,7 +39,7 @@ jobs:
 
       - name: Download release assets
         run: |
-          .github/scripts/retry.sh gh release download "${{ inputs.tag }}" --repo readest/readest --dir ./release-assets --clobber
+          .github/scripts/retry.sh gh release download "${{ inputs.tag }}" --repo Moranjianghe/gratis-readest --dir ./release-assets --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -62,8 +62,8 @@ jobs:
 
       - name: Modify latest.json download URLs
         run: |
-          GITHUB_BASE_URL="https://github.com/readest/readest/releases/download"
-          READEST_BASE_URL="https://download.readest.com/releases"
+          GITHUB_BASE_URL="https://github.com/Moranjianghe/gratis-readest/releases/download"
+          READEST_BASE_URL="https://github.com/Moranjianghe/gratis-readest/releases/latest/download"
           sed -i "s#${GITHUB_BASE_URL}#${READEST_BASE_URL}#g" ./release-assets/latest.json
 
       - name: Upload to R2

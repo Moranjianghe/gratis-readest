@@ -48,7 +48,7 @@ final class ColdReadAloud: NSObject, AVSpeechSynthesizerDelegate {
     let settingsURL = root.appendingPathComponent("settings.json")
     guard let settings = Self.readJSON(settingsURL), settings["pinCodeEnabled"] as? Bool != true
     else { return nil }
-    let bookDir = root.appendingPathComponent("Readest/Books/\(bookHash)", isDirectory: true)
+    let bookDir = root.appendingPathComponent("GratisReadest/Books/\(bookHash)", isDirectory: true)
     guard
       let epub = (try? FileManager.default.contentsOfDirectory(at: bookDir, includingPropertiesForKeys: nil))?
         .first(where: { $0.pathExtension.lowercased() == "epub" })

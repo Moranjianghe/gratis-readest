@@ -9,6 +9,7 @@ import {
 import { isWebAppPlatform } from '@/services/environment';
 import { getDailyUsage } from '@/services/translators/dailyUsage';
 import { getRuntimeConfig } from '@/services/runtimeConfig';
+import { APP_CLOUD_SYNC_REQUIRES_PREMIUM } from '@/config/appConfig';
 
 interface Token {
   plan: UserPlan;
@@ -70,7 +71,7 @@ export const isCloudSyncInPlan = (plan: UserPlan, customizationPurchased: boolea
  * Every gate goes through {@link isCloudSyncAllowed}, so this flag is the
  * whole toggle.
  */
-export const CLOUD_SYNC_REQUIRES_PREMIUM = true;
+export const CLOUD_SYNC_REQUIRES_PREMIUM = APP_CLOUD_SYNC_REQUIRES_PREMIUM;
 
 /**
  * Whether third-party cloud sync is available for a plan. Falls back to the

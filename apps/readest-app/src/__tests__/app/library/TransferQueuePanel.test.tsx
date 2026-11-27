@@ -118,14 +118,15 @@ describe('TransferQueuePanel Download All', () => {
     expect(screen.queryByLabelText('Download All')).toBeNull();
   });
 
-  it('is hidden when the only file provider is paused', () => {
+  it('shows downloads when the only file provider is available on the free plan', () => {
+    setCachedUserPlan('free');
     withSettings({
       readestCloud: { enabled: false },
       s3: { enabled: true },
     } as Partial<SystemSettings>);
     useLibraryStore.setState({ getVisibleLibrary: () => [cloudOnlyBook] });
     render(<TransferQueuePanel />);
-    expect(screen.queryByLabelText('Download All')).toBeNull();
+    expect(screen.queryByLabelText('Download All')).not.toBeNull();
   });
 
   // A library-wide download would otherwise toast "Book downloaded" once per

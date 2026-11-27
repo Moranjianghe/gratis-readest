@@ -87,18 +87,18 @@ for (const [stage, fullRefresh] of [false, true].entries()) {
       expect(h.pull).toHaveBeenCalledWith(fullRefresh, true);
     });
 
-    it('prompts for sign-in when the only file backend is paused by the plan gate', async () => {
+    it('refreshes file sync without a Readest account on the free plan', async () => {
       setCachedUserPlan('free');
       const settings = useSettingsStore.getState().settings;
       useSettingsStore.setState({
         settings: { ...settings, webdav: { ...settings.webdav, enabled: true } },
       });
       await refresh();
-      expect(h.login).toHaveBeenCalledWith(h.router);
-      expect(h.pull).not.toHaveBeenCalled();
+      expect(h.login).not.toHaveBeenCalled();
+      expect(h.pull).toHaveBeenCalledWith(fullRefresh, true);
     });
 
-    it('refreshes OPDS even when a configured file backend is paused', async () => {
+    it('refreshes OPDS and file sync without a Readest account on the free plan', async () => {
       setCachedUserPlan('free');
       const settings = useSettingsStore.getState().settings;
       useSettingsStore.setState({
@@ -112,6 +112,7 @@ for (const [stage, fullRefresh] of [false, true].entries()) {
       });
       await refresh();
       expect(h.login).not.toHaveBeenCalled();
+      expect(h.pull).toHaveBeenCalledWith(fullRefresh, true);
       expect(h.opds).toHaveBeenCalledWith(true);
     });
 
